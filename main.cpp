@@ -106,7 +106,7 @@ void d_r_controller(std::string id,std::string topic){
 
 
 
-string reader(std::vector<unsigned char> x){
+string compressor_reader(std::vector<unsigned char> x){
     std::unique_ptr<string> out=std::make_unique<string>();
 
     short i=0;
@@ -117,9 +117,6 @@ string reader(std::vector<unsigned char> x){
     };
     return *out;
 };
-
-
-
 
 
 string compressor(string data){
@@ -161,7 +158,7 @@ string compressor(string data){
     int* compressed_size=new int;
     *compressed_size = com_data->size() - stream.avail_out;
     com_data->push_back(*compressed_size);
-    *junk=reader(*com_data);
+    *junk=compressor_reader(*com_data);
 
     return *junk;
     delete compressed_size;
@@ -280,7 +277,7 @@ creator_operands space_operations;
     std::string owner_long_lat[2];
     bool options[4]={false,false,false,false};
 
-    // cout<<space_creator(space_id,user_id,space_name,owner_long_lat,options)<<endl;
+    cout<<space_creator(space_id,user_id,space_name,owner_long_lat,options)<<endl;
 
     // std::promise<bool> get_test;
     // std::future<bool> get_test_holder=get_test.get_future();
@@ -298,9 +295,6 @@ creator_operands space_operations;
     // testing_thread.join();
 
     // cout<<"space still open ?...."<<get_test_holder.get()<<endl;
-
-
-    d_r_controller(schema.generate_id("0","0","0"),"football");
 
     return 0;
 }

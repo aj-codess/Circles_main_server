@@ -31,7 +31,7 @@ struct data_2_hold{
     std::string space_name;
     shield_data log_info;
     std::vector<std::string> awaiting_space_piece;
-    std::vector<std::string> space_pref;
+    map<std::string,int> space_pref_ratings;
 };
 
 
@@ -53,7 +53,7 @@ class creator_operands{
     bool remove_admin(std::string space_id,std::string owners_id,std::string admin_2_remove_id);
     bool add_2_space(std::string space_id,std::string owners_id,std::string sub_admin,std::string id_2_add);
     bool remove_piece(std::string space_id,std::string owners_id,std::string sub_admin,std::string id_2_remove);
-    bool update_pref(std::string space_id);
+    bool update_pref(std::string space_id,std::string topic);
 
     private:
     std::vector<std::string> name_pool;
@@ -329,12 +329,30 @@ bool creator_operands::remove_piece(std::string space_id,std::string owners_id,s
 
 
 
-bool creator_operands::update_pref(std::string space_id){
-    std::unque_ptr<bool> isUpdated=std::make_unique<bool>();
+
+
+
+
+bool creator_operands::update_pref(std::string space_id,std::string topic){
+    std::unique_ptr<bool> isUpdated=std::make_unique<bool>();
 
     if(this->exists(space_id)==true){
+        
+        auto itr=space_containers[space_id].space_pref_ratings.find(topic);
+
+        if(itr!=space_containers[space_id].space_pref_ratings.end()){
+
+            space_containers[space_id].space_pref_ratings[topic]++;
+
+        } else{
+            space_containers[space_id].space_pref_ratings[topic]=1;
+        };
+
+        *isUpdated=true;
+
+    } else{
         *isUpdated=false;
-    }
+    };
 
     return *isUpdated;
 };
