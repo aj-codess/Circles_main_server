@@ -139,6 +139,11 @@ in all where sub_admin is any admin aside the main admin or the space owner.
 
 
 
+------updating space preference------
+this is done by calling
+creator.update_pref(space_id,"-preference-")
+
+
 
 
 
