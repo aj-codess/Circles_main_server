@@ -181,25 +181,7 @@ string hasher(string key){
 
 //recommended topics to query dataBase statistically ...Based on your selected topics
 void rec_engine(){
-    // specifying number of items to query
-    global_t_operands.t_per_page=7;
-
-
-    // saved data of what user wants
-    // global_t_operands.global_t; // vector of topics user wants
-    // global_t_operands.weights; // vector of to pick ratings
-
-    // recording what user sees
-    global_t_operands.read_t="sport";
-    global_t_operands.t_rating=1;
-
-// dont touch....initializers
-    global_t_operands.global_checks();
-    global_t_operands.query_dataBase();
-
-    for(int i=0;i<global_t_operands.consumer.size();i++){
-        cout<<global_t_operands.consumer.at(i)<<endl;
-    };
+    
 };
 
 
