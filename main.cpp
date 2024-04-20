@@ -97,7 +97,6 @@ void d_r_controller(std::string id,std::string topic){
     std::string useCase=json_id_info["useCase"].get<std::string>();
     std::string time=json_id_info["time"].get<std::string>();
     std::string pos_server=json_id_info["pos_on_server"].get<std::string>();
-
     
 
 };
@@ -277,6 +276,7 @@ creator_operands space_operations;
     // testing_thread.join();
 
     // cout<<"space still open ?...."<<get_test_holder.get()<<endl;
+
 
     return 0;
 }

@@ -24,3 +24,8 @@ target_link_libraries(main PUBLIC ${ZLIB_LIBRARIES} ${ZLIB_DEPENDENCIES})
 find_package(nlohmann_json REQUIRED)
 target_include_directories(main PUBLIC ${nlohmann_json_INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${nlohmann_json_LIBRARIES} ${nlohmann_json_DEPENDENCIES})
+
+
+find_package(libpqxx REQUIRED)
+target_include_directories(main PUBLIC ${libpqxx_INCLUDE_DIR})
+target_link_libraries(main PUBLIC ${libpqxx_LIBRARIES} ${libpqxx_DEPENDENCIES})
