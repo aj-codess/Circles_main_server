@@ -10,6 +10,11 @@
 #include <crow.h>
 #include <zlib.h>
 #include <nlohmann/json.hpp>
+#include <pqxx/pqxx>
+
+#include <openssl/opensslconf.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 #include <rec_engine.h>
 #include <domain_probe.h>
@@ -116,6 +121,7 @@ string compressor_reader(std::vector<unsigned char> x){
     };
     return *out;
 };
+
 
 
 string compressor(string data){

@@ -1,21 +1,26 @@
 #ifndef RECOMMENDATION_ALGO
 #define RECOMMENDATION_ALGO
 
+#define RANGE 5
+#define T_PERCENT 100
+
 // based on your selected topics
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include <algorithm>
 #include <iterator>
 #include <random>
 #include <memory>
+#include <limits>
 
 using namespace std;
 
 class recommendation_operands{
   private:
-  short limit=100;
+  const short limit=std::numeric_limits<short>::max()-RANGE;
   void safety(std::string id_2_check,std::string topic_2_check);
   void update_in_data(std::string id);
 
@@ -24,6 +29,8 @@ class recommendation_operands{
   bool update_topic(std::string id,std::string topic_2_updt,int rating,bool uprate);//update topic
   bool delete_topic(std::string id,std::string topic_2_delete);//not interested topic
   bool clear_deleted_user_d(std::string id_2_clear);//clear deleted accound data
+  bool update_f_new(std::string id,std::vector<std::string> new_list);//update pref for new users
+  std::string gen_pref(std::string id);//gets preference based on the statistics
 
 } rec_operands;
 
@@ -37,7 +44,9 @@ std::map<std::string,map<std::string,global>> id_2_topic;
 
 
 void recommendation_operands::safety(std::string id_2_check,std::string topic_2_check){
-  id_2_topic[id_2_check][topic_2_check].current>this->limit?id_2_topic[id_2_check][topic_2_check].current=this->limit:nullptr;
+  if(id_2_topic[id_2_check][topic_2_check].current>=this->limit){
+    id_2_topic[id_2_check][topic_2_check].current=this->limit;
+  };
 };
 
 
@@ -67,8 +76,6 @@ bool recommendation_operands::update_topic(std::string id,std::string topic_2_up
 
       if(itr!=id_2_topic[id].end() && uprate==true){
 
-            this->safety(id,topic_2_updt);
-
         id_2_topic[id][topic_2_updt].current+=rating;
         *isUpdated=true;
 
@@ -80,13 +87,21 @@ bool recommendation_operands::update_topic(std::string id,std::string topic_2_up
       } else{
 
         id_2_topic[id][topic_2_updt].current=1;
+
         *isUpdated=true;
 
       };
 
+    this->safety(id,topic_2_updt);
+    
+    this->update_in_data(id);
+
+    } else{
+
+      *isUpdated=false;
+
     };
 
-    update_in_data(id);
 
   return *isUpdated;
 };
@@ -109,11 +124,11 @@ bool recommendation_operands::delete_topic(std::string id,std::string topic_2_de
       *isDeleted=false;
     };
 
+    this->update_in_data(id);
+
   } else{
     *isDeleted=false;
   };
-
-      update_in_data(id);
 
     return *isDeleted;
 };
@@ -136,6 +151,73 @@ bool recommendation_operands::clear_deleted_user_d(std::string id_2_clear){
   return *Udata_is_cleared;
 };
 
+
+
+
+void recommendation_operands::update_in_data(std::string id){
+  std::unique_ptr<bool> isUpdated=std::make_unique<bool>();
+
+  std::unique_ptr<int> T_current_per_id=std::make_unique<int>();
+
+  for(auto itr=id_2_topic[id].begin();itr!=id_2_topic[id].end();itr++){
+      *T_current_per_id+=id_2_topic.at(id).at(itr->first).current;
+  };
+
+  for(auto itr=id_2_topic[id].begin();itr!=id_2_topic[id].end();itr++){
+    id_2_topic.at(id).at(itr->first).total_perC=(id_2_topic.at(id).at(itr->first).current / *T_current_per_id)*(T_PERCENT);
+  };
+
+};
+
+
+
+bool recommendation_operands::update_f_new(std::string id,std::vector<std::string> new_list){
+    std::unique_ptr<bool> listAppended=std::make_unique<bool>();
+
+    if(this->id_finder(id) != true){
+
+      for(int i=0;i<new_list.size();i++){
+        id_2_topic.at(id).at(new_list.at(i)).current=1;
+      };
+
+      *listAppended=true;
+
+    } else{
+
+      *listAppended=false;
+
+    };
+
+    this->update_in_data(id);
+
+  return *listAppended;
+};
+
+
+
+std::string recommendation_operands::gen_pref(std::string id){
+  std::unique_ptr<std::string> pref=std::make_unique<std::string>();
+
+  std::unique_ptr<short> holder=std::make_unique<short>(0);
+
+    std::mt19937 generator(std::random_device{}());
+    std::uniform_int_distribution<int> distribution(1,100);
+
+    short guess=distribution(generator);
+
+    for(auto itr=id_2_topic[id].begin();itr!=id_2_topic[id].end();itr++){
+      *holder+=id_2_topic.at(id).at(itr->first).total_perC;
+
+      if(guess<=*holder){
+        *pref=itr->first;
+        break;
+      };
+      
+    };
+
+
+  return *pref;
+};
 
 
 #endif

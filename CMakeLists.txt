@@ -28,4 +28,8 @@ target_link_libraries(main PUBLIC ${nlohmann_json_LIBRARIES} ${nlohmann_json_DEP
 
 find_package(libpqxx REQUIRED)
 target_include_directories(main PUBLIC ${libpqxx_INCLUDE_DIR})
-target_link_libraries(main PUBLIC ${libpqxx_LIBRARIES} ${libpqxx_DEPENDENCIES})
+target_link_libraries(main PUBLIC libpqxx::pqxx ${libpqxx_LIBRARIES} ${libpqxx_DEPENDENCIES})
+
+find_package(OpenSSL REQUIRED)
+target_include_directories(main PUBLIC ${OpenSSL_INCLUDE_DIR})
+target_link_libraries(main PUBLIC ${OpenSSL_LIBRARIES} ${OpenSSL_DEPENDENCIES})
