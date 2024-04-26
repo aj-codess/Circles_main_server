@@ -146,5 +146,23 @@ creator.update_pref(space_id,"-preference-")
 
 
 
+----recommendation engine-----
+  bool id_finder(std::string id_2_find);//check for the availability of an id or client
+  bool update_topic(std::string id,std::string topic_2_updt,int rating,bool uprate);//update topic
+  bool delete_topic(std::string id,std::string topic_2_delete);//not interested topic
+  bool clear_deleted_user_d(std::string id_2_clear);//clear deleted accound data
+  bool update_f_new(std::string id,std::vector<std::string> new_list);//update pref for new users
+  std::string gen_pref(std::string id);//gets preference based on the statistics
+
+
+
+
+
+
+
+
+
+
+
 
     
