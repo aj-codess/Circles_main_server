@@ -17,6 +17,7 @@
 #include <openssl/err.h>
 
 #include <rec_engine.h>
+#include <circles_rec_engine.h>
 #include <domain_probe.h>
 #include <keypass_probe.h>
 #include <hasher.h>
@@ -184,11 +185,6 @@ string hasher(string key){
 
 
 
-//recommended topics to query dataBase statistically ...Based on your selected topics
-void rec_engine(){
-    
-};
-
 
 
 
@@ -264,7 +260,7 @@ creator_operands space_operations;
     std::string owner_long_lat[2];
     bool options[4]={false,false,false,false};
 
-    cout<<space_creator(space_id,user_id,space_name,owner_long_lat,options)<<endl;
+    // cout<<space_creator(space_id,user_id,space_name,owner_long_lat,options)<<endl;
 
     // std::promise<bool> get_test;
     // std::future<bool> get_test_holder=get_test.get_future();
@@ -282,6 +278,10 @@ creator_operands space_operations;
     // testing_thread.join();
 
     // cout<<"space still open ?...."<<get_test_holder.get()<<endl;
+
+    std::vector<std::string> subjects = {"Mathematics", "Physics", "Chemistry", "Biology", "Computer Science"};
+    cout<<rec_operands.update_f_new(user_id,subjects)<<endl;
+    cout<<rec_operands.gen_pref(user_id)<<endl;
 
 
     return 0;

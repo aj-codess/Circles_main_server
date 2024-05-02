@@ -8,7 +8,6 @@ run the CMakeLists.txt to generate a build or buid files.
 main.cpp being the entry code whiles main being the executable
 
 other dependencies found in the ./include directory
-Node js sub engine found in the ./sub_engine directory
 
 
 
