@@ -31,7 +31,7 @@ cout<<"checking if they are the sam "<<P_probe.matcher(hasher(compressor(string 
 
 ----hasher.h----
 string message;
-// cout<<"encrypted hash Message "<<hasher(compressor(message))<<endl;
+// cout<<"encrypted hash Message "<<hasher(shrink.compress(message))<<endl;
 
 hasher function accepts string of compressed junk
 
