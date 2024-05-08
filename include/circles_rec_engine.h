@@ -1,5 +1,4 @@
-#ifndef DOMAIN_RECOMMENDATION_ENGINE
-#define DOMAIN_RECOMMENDATION_ENGINE
+#pragma once
 
 #define SPICE 5
 #define T_PERCENT 100
@@ -27,6 +26,7 @@ class circles_rec_module{
     bool delete_topic(std::string id,std::string topic_2_delete);
     bool clear_circle_d(std::string id);//triggers when space is deleted
     std::string gen_pref(std::string id);
+    std::string trending_t(std::string id);//get trending topic in a particular space
 
 } circles_rec;
 
@@ -211,4 +211,25 @@ std::string circles_rec_module::gen_pref(std::string id){
 };
 
 
-#endif
+std::string circles_rec_module::trending_t(std::string id){
+  std::unique_ptr<std::string> isTrending=std::make_unique<std::string>();
+
+  std::unique_ptr<double> temp=std::make_unique<double>(0);
+
+  if(this->id_finder(id)==true){
+    
+    for(auto itr=rec_struc[id].begin();itr!=rec_struc[id].end();itr++){
+
+      if(rec_struc[id][itr->first].perc>=*temp){
+        
+              *temp=rec_struc[id][itr->first].perc;
+              *isTrending=itr->first;
+
+      };
+
+    };
+
+  };
+
+  return *isTrending;
+};

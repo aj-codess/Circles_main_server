@@ -8,9 +8,8 @@
 
 #include <boost/asio.hpp>
 #include <crow.h>
-#include <zlib.h>
-#include <nlohmann/json.hpp>
 #include <pqxx/pqxx>
+#include <nlohmann/json.hpp>
 
 #include <openssl/opensslconf.h>
 #include <openssl/ssl.h>
@@ -22,170 +21,11 @@
 #include <keypass_probe.h>
 #include <hasher.h>
 #include <id_schema.h>
-#include <id_reader.h>
 #include <space_c_engine.h>
+#include <compressor.h>
+#include <id_reader.h>
 
 using namespace std;
-
-
-nlohmann::json id_reader(std::string id,bool del_id=false){
-
-    id_reader_handler.current_user=schema.current_user;
-    id_reader_handler.current_space=schema.current_space;
-    id_reader_handler.current_time_id_len=schema.current_time_id_len;
-
-    id_info id_data;
-
-    std::unique_ptr<short> nth_0=std::make_unique<short>();
-    *nth_0=std::stoi(id.substr(0,1));
-
-   switch(*nth_0){
-    case 0:
-    case 2:id_data=id_reader_handler.analyse_02(id);break;
-    case 1:
-    case 4:id_data=id_reader_handler.analyse_14(id);break;
-    case 3:
-    case 5:id_data=id_reader_handler.analyse_35(id);break;
-   };
-
-
-   if(del_id==true){
-        if(id_data.useCase=="user"){
-            schema.del_user(id_data.pos_on_server);
-        } else if(id_data.useCase=="space"){
-            schema.del_space(id_data.pos_on_server);
-        };
-   };
-
-
-nlohmann::json user_info;
-nlohmann::json space_info;
-
-if (id_data.user != nullptr) {
-    user_info = {
-        {"useCase", id_data.user->useCase},
-        {"time", id_data.user->time},
-        {"position on server", id_data.user->pos_on_server},
-    };
-} else {
-    user_info = nullptr;
-};
-
-if (id_data.space_id != nullptr) {
-    space_info = {
-        {"useCase", id_data.space_id->useCase},
-        {"time", id_data.space_id->time},
-        {"position on server", id_data.space_id->pos_on_server},
-    };
-} else {
-    space_info = nullptr;
-};
-
-
-nlohmann::json id_info_json{
-    {"useCase", id_data.useCase},
-    {"time", id_data.time},
-    {"Position on Server", id_data.pos_on_server},
-    {"user", user_info},
-    {"space_id",space_info}
-};
-
-    return id_info_json;
-};
-
-
-
-
-void d_r_controller(std::string id,std::string topic){
-
-    nlohmann::json json_id_info=id_reader(id);
-
-    std::string useCase=json_id_info["useCase"].get<std::string>();
-    std::string time=json_id_info["time"].get<std::string>();
-    std::string pos_server=json_id_info["pos_on_server"].get<std::string>();
-    
-
-};
-
-
-
-
-
-string compressor_reader(std::vector<unsigned char> x){
-    std::unique_ptr<string> out=std::make_unique<string>();
-
-    short i=0;
-
-    while(i<x.size()){
-        *out+=x.at(i);
-        i++;
-    };
-    return *out;
-};
-
-
-
-string compressor(string data){
-
-    std::unique_ptr<string> junk=std::make_unique<string>();
-
-    std::unique_ptr<std::vector<unsigned char>> com_data=std::make_unique<std::vector<unsigned char>>();
-
-    z_stream stream;
-    memset(&stream,0,sizeof(stream));
-    int* level=new int;
-    *level=Z_DEFAULT_COMPRESSION;
-
-    int* status=new int;
-    *status=deflateInit(&stream,*level);
-
-    if(*status != Z_OK){
-        // "Error Compressing";
-        compressor(data);
-    };
-
-    com_data->resize(compressBound(data.size()));
-
-
-    stream.next_in = (Bytef *)data.data();
-    stream.avail_in = (uInt)data.size();
-    stream.next_out = com_data->data();
-    stream.avail_out = com_data->size();
-
-
-    *status = deflate(&stream, Z_FINISH);
-    if (*status != Z_STREAM_END) {
-        // "Compression Didnt complete";
-         compressor(data);
-    };
-
-    deflateEnd(&stream);
-
-    int* compressed_size=new int;
-    *compressed_size = com_data->size() - stream.avail_out;
-    com_data->push_back(*compressed_size);
-    *junk=compressor_reader(*com_data);
-
-    return *junk;
-    delete compressed_size;
-    delete status;
-};
-
-
-
-
-string hasher(string key){
-    std::unique_ptr<string> message=std::make_unique<string>();
-
-    *message=hasher_ref.hash(key);
-
-    return *message;
-};
-
-
-
-
-
 
 
 bool space_creator(std::string space_id,std::string ownership_id="",std::string space_name="",std::string owner_long_lat[]=nullptr,bool options[]=nullptr){
@@ -205,6 +45,8 @@ nlohmann::json get_awaiting(std::string space_id,std::string owners_id){
 
     return in_json;
 };
+
+
 
 
 nlohmann::json get_piece(std::string space_id){
@@ -253,12 +95,9 @@ int main(){
     // *email_probe_handler_result=probe_promise_holder.get();
 
 
-creator_operands space_operations;
-    std::string space_id=schema.generate_id("2","0","0");
-    std::string user_id=schema.generate_id("0","0","0");
-    std::string space_name="telecom_campus base";
-    std::string owner_long_lat[2];
-    bool options[4]={false,false,false,false};
+
+
+// this is a different blog....................
 
     // cout<<space_creator(space_id,user_id,space_name,owner_long_lat,options)<<endl;
 
@@ -278,10 +117,6 @@ creator_operands space_operations;
     // testing_thread.join();
 
     // cout<<"space still open ?...."<<get_test_holder.get()<<endl;
-
-    std::vector<std::string> subjects = {"Mathematics", "Physics", "Chemistry", "Biology", "Computer Science"};
-    cout<<rec_operands.update_f_new(user_id,subjects)<<endl;
-    cout<<rec_operands.gen_pref(user_id)<<endl;
 
 
     return 0;

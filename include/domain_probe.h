@@ -1,5 +1,4 @@
-#ifndef DOMAIN_PROBE
-#define DOMAIN_PROBE
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -157,5 +156,3 @@ void E_probe_class::push_msg(){
     };
 
 };
-
-#endif

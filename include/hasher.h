@@ -1,5 +1,5 @@
-#ifndef HASHER
-#define HASHER
+#pragma once
+
 #define CONST_PREFIX ".Space"
 
 #include <iostream>
@@ -33,5 +33,3 @@ string hasher_class::hash(string chunk){
     std::unique_ptr<string> hashed_value=std::make_unique<string>(std::to_string(this->hasher(this->addons(chunk))));
     return *hashed_value;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef SCHEMA
-#define SCHEMA 
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -14,11 +13,7 @@ class id_schema{
     public:
     time_t time_id();
     uint64_t user_space_position(bool user_or_space);
-    void deleted(std::string deleted_id);
-    void id_reader(std::string id_2_read);
-    std::string get_timestamp();
     std::string generate_id(std::string option,std::string user_id_f_ugc="0",std::string space_id_f_ugc="0");
-    short option_purpose();
     void del_user(std::string user_id);
     void del_space(std::string space_id);
 
@@ -97,6 +92,3 @@ void id_schema::del_user(std::string user_id){
 void id_schema::del_space(std::string space_id){
     this->unoccupied_space.push_back(std::stoull(space_id));
 };
-
-
-#endif

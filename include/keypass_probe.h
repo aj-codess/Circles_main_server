@@ -1,5 +1,4 @@
-#ifndef KEYPASS
-#define KEYPASS
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -98,7 +97,3 @@ std::unique_ptr<bool> special_char=std::make_unique<bool>(false);
 
     return (up_c || low_c && digit && special_char);
 };
-
-
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef RECOMMENDATION_ALGO
-#define RECOMMENDATION_ALGO
+#pragma once
 
 #define RANGE 5
 #define T_PERCENT 100
@@ -238,6 +237,3 @@ std::string recommendation_operands::gen_pref(std::string id){
 
   return *pref;
 };
-
-
-#endif
