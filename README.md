@@ -54,7 +54,7 @@ cout<<"space chat - "<<schema.generate_id("5",user_id,space_id)<<endl;
 ----Task associated with id_reader.h----
 std::string space_ugc_id=schema.generate_id("3",schema.generate_id("0","0","0"),schema.generate_id("2","0","0"));
 
-cout<<id_reader(space_ugc_id,false).dump(2)<<endl;
+cout<<id_reader_handler.parser(id,false).dump(2)<<endl;
 cout<<"id to be read  - "<<space_ugc_id<<endl;
 
 false being passed as an argument is used to specify if the passed in id which is an argument is to be deleted or not.
@@ -153,7 +153,9 @@ creator.update_pref(space_id,"-preference-")
   bool update_f_new(std::string id,std::vector<std::string> new_list);//update pref for new users
   std::string gen_pref(std::string id);//gets preference based on the statistics
 
-
+    std::vector<std::string> subjects = {"Mathematics", "Physics", "Chemistry", "Biology", "Computer Science"};
+    cout<<rec_operands.update_f_new(user_id,subjects)<<endl;
+    cout<<rec_operands.gen_pref(user_id)<<endl;
 
 
 
