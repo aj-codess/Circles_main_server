@@ -12,7 +12,6 @@ using namespace std;
 
 
 struct shield_data{
-    bool shield_ini;
     std::string owner_long;
     std::string owner_lat;
     bool isOpen;
@@ -51,6 +50,8 @@ class creator_operands{
     bool remove_admin(std::string space_id,std::string owners_id,std::string admin_2_remove_id);
     bool add_2_space(std::string space_id,std::string owners_id,std::string sub_admin,std::string id_2_add);
     bool remove_piece(std::string space_id,std::string owners_id,std::string sub_admin,std::string id_2_remove);
+    std::string get_space_owners_id(std::string space_id);
+    std::vector<std::string> get_space_sub_admins(std::string space_id);
 
     private:
     std::vector<std::string> name_pool;
@@ -73,10 +74,9 @@ bool creator_operands::create(std::string id,std::string ownership_id,std::strin
         // long and lat of the location where space was created
         space_containers[id].log_info.owner_long=owner_long_lat[0];
         space_containers[id].log_info.owner_lat=owner_long_lat[1];
-        space_containers[id].log_info.shield_ini=options[0];
-        space_containers[id].log_info.isOpen=options[1];
-        space_containers[id].log_info.man_aut=options[2];
-        space_containers[id].log_info.timer_open=options[3];
+        space_containers[id].log_info.isOpen=options[0];
+        space_containers[id].log_info.man_aut=options[1];
+        space_containers[id].log_info.timer_open=options[2];
 
         *isCreated=true;
     };
@@ -120,22 +120,26 @@ bool creator_operands::exists(std::string space_id,std::string space_name=""){
 bool creator_operands::join(std::string space_id,std::string user_id){
     std::unique_ptr<bool> isJoined=std::make_unique<bool>();
 
-    if(space_containers.find(space_id) != space_containers.end() && space_containers[space_id].log_info.isOpen == true){
+    if(this->exists(space_id)==true){
 
-        space_containers[space_id].space_piece.push_back(user_id);
-        *isJoined=true;
+        if(space_containers[space_id].log_info.isOpen == true && space_containers[space_id].log_info.timer_open==false){
 
-    } else if(space_containers.find(space_id) != space_containers.end() && space_containers[space_id].log_info.timer_open==true){
+            space_containers[space_id].space_piece.push_back(user_id);
+            *isJoined=true;
 
-        space_containers[space_id].awaiting_space_piece.push_back(user_id);
-        *isJoined=true;
+        } else if(space_containers[space_id].log_info.isOpen==true && space_containers[space_id].log_info.timer_open==true){
 
-    } else if(space_containers.find(space_id) != space_containers.end() && space_containers[space_id].log_info.man_aut==true){
+            space_containers[space_id].awaiting_space_piece.push_back(user_id);
+            *isJoined=true;
 
-        space_containers[space_id].awaiting_space_piece.push_back(user_id);
-        *isJoined=true;
+        } else if(space_containers[space_id].log_info.isOpen==true && space_containers[space_id].log_info.man_aut==true){
 
-    } else {
+            space_containers[space_id].awaiting_space_piece.push_back(user_id);
+            *isJoined=true;
+
+        };
+
+    } else{
         *isJoined=false;
     };
 
@@ -322,4 +326,34 @@ bool creator_operands::remove_piece(std::string space_id,std::string owners_id,s
     }
 
     return *isRemoved;
+};
+
+
+
+
+std::string creator_operands::get_space_owners_id(std::string space_id){
+    std::unique_ptr<std::string> isOwner=std::make_unique<std::string>();
+
+    if(this->exists(space_id)==true){
+
+        *isOwner=space_containers[space_id].ownership_id;
+
+    };
+
+    return *isOwner;
+};
+
+
+
+
+std::vector<std::string> creator_operands::get_space_sub_admins(std::string space_id){
+    std::unique_ptr<std::vector<std::string>> sub_owners=std::make_unique<std::vector<std::string>>();
+
+    if(this->exists(space_id)==true){
+
+        *sub_owners=space_containers[space_id].sub_owners;
+
+    };
+
+    return *sub_owners;
 };
