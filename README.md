@@ -77,22 +77,37 @@ if True meaning the id is to be deleted and if false meaning the id is not to be
 
 
 ----------- timer related type of open space and how it is being tested ----------
-    std::promise<bool> get_test;
-    std::future<bool> get_test_holder=get_test.get_future();
+    std::string space_id=schema.generate_id("2","0","0");
+    std::string space_admin=schema.generate_id("0","0","0");
+    std::string owner_long_lat[2];
+    bool options[3]={true,false,true};
+    space_creator(space_id,space_admin,"telecom_campus base",owner_long_lat,options);
 
-    std::thread testing_thread([&space_operations,&get_test,&space_id,&user_id](){
+// this is a different blog....................
+    std::promise<bool> space_o_result;
+    std::future<bool> result_holder=space_o_result.get_future();
+
+    creator_operands creator;
+
+    std::thread open_space_thread([&creator,&space_o_result,&space_id,&space_admin](){
         std::unique_ptr<bool> isOpen=std::make_unique<bool>();
-        *isOpen=creator.open_space(space_id,user_id,10);
-        get_test.set_value(*isOpen);
+        *isOpen=creator.open_space(space_id,space_admin,60);
+        space_o_result.set_value(*isOpen);
     });
 
     for(int i=0;i<100;i++){
+        std::string user_id=schema.generate_id("0","0","0");
         creator.join(space_id,user_id);
     };
 
-    testing_thread.join();
+    open_space_thread.join();
 
-    cout<<"space still open ?...."<<get_test_holder.get()<<endl;
+    cout<<"space still open ?...."<<result_holder.get()<<endl;
+    
+    cout<<"list of awaiting space piece - "<<get_awaiting(space_id,space_admin).dump(2)<<endl;
+    cout<<"list of joined members - "<<get_piece(space_id).dump(2)<<endl;
+    cout<<"admin of space - ref - space admin variable "<<space_admin<<endl;
+    cout<<"admin of space - ref - space data check "<<creator.get_space_owners_id(space_id)<<endl;
 
 
 
