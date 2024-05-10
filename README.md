@@ -12,6 +12,47 @@ other dependencies found in the ./include directory
 
 
 
+--------------------gmail verification handler-----------------------------
+testing unit code below for reference
+
+// dont touch this blog
+
+    // E_probe_class E_probe;
+    // std::unique_ptr<bool> email_probe_handler_result=std::make_unique<bool>(false); // holds the entire email checks results
+
+
+    // *email_probe_handler_result=E_probe.validator();//mail address goes into the braces
+
+
+    // E_probe.push_option;/*push option in here. 0 for phone and 1 for gmail push*
+    // E_probe.phone_no;/*phone number in here. stringifies*/
+
+    // std::promise<bool> probe_promise;
+    // std::future<bool> probe_promise_holder=probe_promise.get_future();
+
+
+    // std::thread veri_checks_thread([&E_probe,&probe_promise](){
+
+    //     std::unique_ptr<bool> veri_checksResult=std::make_unique<bool>(false);
+    //     *veri_checksResult=E_probe.veri_checks();
+    //     probe_promise.set_value(*veri_checksResult);
+
+    // });
+
+
+    // while(E_probe.met_condition!=true){
+    //     E_probe.returned_token; // returned token in here
+    //     std::this_thread::sleep_for(std::chrono::seconds(3));
+    // };
+
+    // veri_checks_thread.join();
+
+    // *email_probe_handler_result=probe_promise_holder.get();
+
+
+
+
+
 ----keypass_probe.h----
 // documentaztion
 P_probe.key; -  equate this to a string of password for validity
@@ -81,7 +122,7 @@ if True meaning the id is to be deleted and if false meaning the id is not to be
     std::string space_admin=schema.generate_id("0","0","0");
     std::string owner_long_lat[2];
     bool options[3]={true,false,true};
-    space_creator(space_id,space_admin,"telecom_campus base",owner_long_lat,options);
+    space_creator(space_id,space_admin,"telecom_campus base",owner_long_lat,options); // original function for creating spaces
 
 // this is a different blog....................
     std::promise<bool> space_o_result;
