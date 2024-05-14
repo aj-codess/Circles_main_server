@@ -110,13 +110,9 @@ if True meaning the id is to be deleted and if false meaning the id is not to be
     std::string owner_long_lat[2]; -             // specifying the location of the owner where space is created - array of longitude and latitude
     bool options[4]={false,false,false,false};  - // array of shield options 0-initialise shield, 1-open space , 2-manual authentication when joining space, 3-timer option where space will be open within a time range
 
-    cout<<c_handler.create_space(space_id,user_id,space_name,owner_long_lat,options)<<endl; - for creating new space 
+    cout<<create_space(space_id,user_id,space_name,owner_long_lat,options)<<endl; - for creating new space 
     cout<<creator.delete_space(space_id,user_id)<<endl; - for deleting space
     cout<<creator.join(space_id,user_id)<<endl; - for joining a particular space where user_id is the id of the user joining
-
-// with some task associated with creation of space, like 
-//create_space, get_awaiting,get_piece and get admins
-//it is therefore required to go into space_c_handler since the above task require converting to json hence c_handler.create_space
 
 
 
