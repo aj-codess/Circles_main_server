@@ -28,53 +28,48 @@
 using namespace std;
 
 
-bool space_creator(std::string space_id,std::string ownership_id="",std::string space_name="",std::string owner_long_lat[]=nullptr,bool options[]=nullptr){
-    std::unique_ptr<bool> is_created=std::make_unique<bool>();
-    
-        *is_created=creator.create(space_id,ownership_id,space_name,owner_long_lat,options);
+void socket_handler(boost::asio::ip::tcp::socket& socket){
+    std::vector<char> mem_buffer(2*1024);
 
-    return *is_created;
+    socket.async_read_some(boost::asio::buffer(mem_buffer.data(),mem_buffer.size()),[&](boost::system::error_code error,std::size_t length){
+        if(!error){
+            for(int i=0;i<length;i++){
+                cout<<mem_buffer[i];
+            };
+        } else{
+            cout<<error.message()<<endl;
+        };
+        socket_handler(socket);
+    });
+
 };
-
-
-// get awaiting users in a space in a json format for response
-nlohmann::json get_awaiting(std::string space_id,std::string owners_id){
-    nlohmann::json in_json;
-
-    in_json["users awaiting"]=creator.get_awaiting(space_id,owners_id);
-
-    return in_json;
-};
-
-
-
-
-nlohmann::json get_piece(std::string space_id){
-  nlohmann::json in_json;
-
-    in_json["users"]=creator.get_space_piece(space_id);
-
-  return in_json;  
-};
-
-
-
-
-
-nlohmann::json get_admins(std::string space_id){
-    nlohmann::json in_json;
-
-    in_json["sub_admins"]=creator.get_space_sub_admins(space_id);
-
-    return in_json
-};
-
-
 
 
 int main(){
 
+    boost::system::error_code grab_error;
 
+    boost::asio::io_context context_layer;
 
+    boost::asio::io_context::work idleWork(context_layer);
+
+    boost::asio::ip::tcp::endpoint circles_endpoint(boost::asio::ip::tcp::v4(),8080);
+
+    boost::asio::ip::tcp::acceptor listener_acceptor(context_layer,circles_endpoint);
+
+    cout<<circles_endpoint<<endl;
+
+    while(true){
+        boost::asio::ip::tcp::socket socket(context_layer);
+        
+        listener_acceptor.accept(socket);
+
+        cout<<"new connection from - "<<socket.remote_endpoint()<<endl;
+
+        std::thread(socket_handler,std::ref(socket)).detach();
+
+    };
+
+    
     return 0;
 }
