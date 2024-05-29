@@ -12,13 +12,13 @@ using namespace std;
 
 class E_probe_class{
     private:
+    const double delay=120;//no call
     const string second_level_domain[3]={"gmail","yahoo","hotmail"}; //no call
     const string top_level_domain=".com"; //no call
     const char concatinator='@'; //no call
 
     public:
     short push_option;//0 for phone push and 1 for gmail push
-    const double delay=120;//no call
     std::string token;
     void push_msg();
     bool timeout(short counter); // no call
