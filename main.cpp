@@ -28,47 +28,92 @@
 using namespace std;
 
 
-void socket_handler(boost::asio::ip::tcp::socket& socket){
-    std::vector<char> mem_buffer(2*1024);
-
-    socket.async_read_some(boost::asio::buffer(mem_buffer.data(),mem_buffer.size()),[&](boost::system::error_code error,std::size_t length){
-        if(!error){
-            for(int i=0;i<length;i++){
-                cout<<mem_buffer[i];
-            };
-        } else{
-            cout<<error.message()<<endl;
-        };
-        socket_handler(socket);
-    });
-
+struct domain_details{
+    std::string host_url;
+    std::string port;
 };
 
 
-int main(){
+class server{
+    private:
 
-    boost::system::error_code grab_error;
+    public:
+    void open_lis_con(boost::asio::io_context &context,domain_details domain_dtl);
+};
 
-    boost::asio::io_context context_layer;
 
-    boost::asio::io_context::work idleWork(context_layer);
 
-    boost::asio::ip::tcp::endpoint circles_endpoint(boost::asio::ip::tcp::v4(),8080);
+void server::open_lis_con(boost::asio::io_context &context,domain_details domain_dtl){
 
-    boost::asio::ip::tcp::acceptor listener_acceptor(context_layer,circles_endpoint);
+try{
 
-    cout<<circles_endpoint<<endl;
+ boost::system::error_code grab_error;
+
+    boost::asio::io_context::work idle_work(context);
+
+    boost::asio::ip::tcp::resolver resolver(context);
+    
+    boost::asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(domain_dtl.host_url,domain_dtl.port);
+
+    boost::asio::ip::tcp::endpoint circles_endpoint = *endpoints.begin();
+
+    boost::asio::ip::tcp::acceptor listener_acceptor(context);
+    
+    listener_acceptor.open(circles_endpoint.protocol());
+
+    listener_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+
+    listener_acceptor.bind(circles_endpoint);
+
+    listener_acceptor.listen();
+
+    cout<<"Servers endpoint - "<<circles_endpoint<<endl;
 
     while(true){
-        boost::asio::ip::tcp::socket socket(context_layer);
-        
+
+        boost::asio::ip::tcp::socket socket(context);
+
         listener_acceptor.accept(socket);
 
         cout<<"new connection from - "<<socket.remote_endpoint()<<endl;
 
-        std::thread(socket_handler,std::ref(socket)).detach();
-
     };
+
+} catch(const exception & e){
+    cout<<"internal server Problem  - "<<e.what()<<endl;
+};
+
+};
+
+
+
+
+int main(){
+
+try{
+    domain_details domain_dtl={"www.circles.com","88"};
+
+    server socket;
+
+    boost::asio::io_context context;
+
+    socket.open_lis_con(context,domain_dtl);
+}catch(const exception & e){
+    cout<<"there was an error starting server - "<<e.what()<<endl;
+};
+
+
+
+    // while(true){
+    //     boost::asio::ip::tcp::socket socket(context_layer);
+        
+    //     listener_acceptor.accept(socket);
+
+    //     cout<<"new connection from - "<<socket.remote_endpoint()<<endl;
+
+    //     std::thread(socket_handler,std::ref(socket)).detach();
+
+    // };
 
     
     return 0;

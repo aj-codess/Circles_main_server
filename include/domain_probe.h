@@ -35,8 +35,6 @@ class E_probe_class{
     bool validator(string key);
 };
 
-
-
     bool* voice_out=new bool;
     short* counter_add=new short;
     std::size_t* get_length=new size_t;
