@@ -47,7 +47,7 @@ void server::open_lis_con(boost::asio::io_context &context,domain_details domain
 
 try{
 
- boost::system::error_code grab_error;
+    boost::system::error_code grab_error;
 
     boost::asio::io_context::work idle_work(context);
 
@@ -77,10 +77,12 @@ try{
 
         cout<<"new connection from - "<<socket.remote_endpoint()<<endl;
 
+        
+
     };
 
 } catch(const exception & e){
-    cout<<"internal server Problem  - "<<e.what()<<endl;
+    cout<<"not a registered Host - "<<e.what()<<endl;
 };
 
 };
@@ -91,7 +93,7 @@ try{
 int main(){
 
 try{
-    domain_details domain_dtl={"www.circles.com","88"};
+    domain_details domain_dtl={"localhost","8888"};
 
     server socket;
 
