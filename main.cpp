@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <thread>
 #include <memory>
 
 #include <server_con_handler.h>
@@ -7,30 +8,39 @@
 using namespace std;
 
 class network_operands{
+    public:
+    bool close_server();
+    bool server_status();
+    void start_server(boost::asio::io_context& context,domain_details& domain);
+
     private:
 
-    public:
-    bool start_server(boost::asio::io_context& context,domain_details& domain);
 } network;
 
 
 
-bool network_operands::start_server(boost::asio::io_context& context,domain_details& domain){
-    std::unique_ptr<bool> isStarted=std::make_unique<bool>(false);
-
+void network_operands::start_server(boost::asio::io_context& context,domain_details& domain){
     try{
 
         server.open_lis_con(context,domain);
 
-        *isStarted=server.isOpen;
+        context.run();
 
     } catch(const exception& e){
-        cout<<"Error Starting Server - "<<e.what()<<endl;
-        *isStarted=false;
-    }
 
-    return *isStarted;
-}
+        cout<<"Error Starting Server - "<<e.what()<<endl;
+
+    };
+};
+
+
+bool network_operands::server_status(){
+    std::unique_ptr<bool> isRunning=std::make_unique<bool>(false);
+    
+    *isRunning=server.isOpen;
+
+    return *isRunning;
+};
 
 
 
@@ -42,6 +52,5 @@ int main(){
 
     network.start_server(context,domain_dtl);
 
-    
     return 0;
 }

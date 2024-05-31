@@ -19,10 +19,10 @@ struct domain_details{
 
 class server_operands{
     private:
-
+    void socket_handler(boost::asio::ip::tcp::socket socket);
 
     public:
-    bool isOpen;
+    bool isOpen=false;
     void open_lis_con(boost::asio::io_context &context,domain_details domain_dtl);
 } server;
 
@@ -63,7 +63,7 @@ try{
 
         cout<<"new connection from - "<<socket.remote_endpoint()<<endl;
 
-        // std::thread(socket_handler,std::ref(socket)).detach();
+        std::thread(&server_operands::socket_handler, this, std::ref(socket)).detach();
 
     };
 
@@ -71,4 +71,14 @@ try{
     cout<<"not a registered Host - "<<e.what()<<endl;
 };
 
+};
+
+
+
+void server_operands::socket_handler(boost::asio::ip::tcp::socket socket){
+
+    boost::system::error_code ec;
+
+    cout<<"the fuck "<<endl;
+    
 };
