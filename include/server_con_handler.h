@@ -5,6 +5,8 @@
 #include <thread>
 #include <future>
 #include <memory>
+#include <functional>
+#include <utility>
 
 #include <boost/asio.hpp>
 
@@ -20,11 +22,64 @@ struct domain_details{
 class server_operands{
     private:
     void socket_handler(boost::asio::ip::tcp::socket socket);
+    void open_acceptor(boost::asio::io_context &context,boost::asio::ip::tcp::endpoints &circles_endpoint);
+    void accept_conn();
 
     public:
     bool isOpen=false;
     void open_lis_con(boost::asio::io_context &context,domain_details domain_dtl);
 } server;
+
+
+
+
+void server_operands::open_acceptor(boost::asio::io_context &context, boost::asio::ip::tcp::endpoints &circles_endpoint){
+
+    boost::asio::ip::tcp::acceptor l_acceptor(context);
+
+    l_acceptor.open(circles_endpoint.protocol());
+
+    l_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+
+    l_acceptor.bind(circles_endpoint);
+
+    l_acceptor.listen();
+
+    cout<<"server Endpoint is - "<<circles_endpoint<<endl;
+
+    this->accept_conn();
+};
+
+
+
+
+void server_operands::accept_conn(){
+    try{
+            listener_acceptor.async_accept(socket_,[this](boost::system::error_code ec){
+            if(!ec){
+                this->isOpen=true;
+
+                cout<<"new socket connection from  - "<<socket_.remote_endpoint()<<endl;
+
+                auto conn_socket=std::make_shared<boost::asio::ip::tcp::socket>(std::move(socket_))
+
+            } else{
+
+                this->isOpen=false;
+
+                this->accept_conn();
+
+            }
+    });
+    } catch(const exception& e){
+        if(e){
+            cout<<"error accepting client - "<<e.what()<<endl;
+
+            // call server refresh if necessary
+        }
+    };
+}
+
 
 
 
@@ -42,32 +97,11 @@ try{
 
     boost::asio::ip::tcp::endpoint circles_endpoint = *endpoints.begin();
 
-    boost::asio::ip::tcp::acceptor listener_acceptor(context);
-    
-    listener_acceptor.open(circles_endpoint.protocol());
+    this->open_acceptor(context,circles_endpoint);
 
-    listener_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+        // std::thread(&server_operands::socket_handler, this, std::ref(socket)).detach();
 
-    listener_acceptor.bind(circles_endpoint);
-
-    listener_acceptor.listen();
-
-    cout<<"Servers endpoint - "<<circles_endpoint<<endl;
-
-    while(true){
-        this->isOpen=true;
-
-        boost::asio::ip::tcp::socket socket(context);
-
-        listener_acceptor.accept(socket);
-
-        cout<<"new connection from - "<<socket.remote_endpoint()<<endl;
-
-        std::thread(&server_operands::socket_handler, this, std::ref(socket)).detach();
-
-    };
-
-} catch(const exception & e){
+} catch(const exception& e){
     cout<<"not a registered Host - "<<e.what()<<endl;
 };
 

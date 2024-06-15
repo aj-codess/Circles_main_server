@@ -3,6 +3,7 @@
 #include <thread>
 #include <memory>
 
+#include <boost/asio.hpp>
 #include <server_con_handler.h>
 
 using namespace std;
