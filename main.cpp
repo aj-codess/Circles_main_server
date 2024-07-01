@@ -12,7 +12,7 @@ class network_operands{
     public:
     bool close_server();
     bool server_status();
-    void start_server(boost::asio::io_context& context,domain_details& domain);
+    void start_server(boost::asio::io_context &context,domain_details &domain);
 
     private:
 
@@ -20,7 +20,7 @@ class network_operands{
 
 
 
-void network_operands::start_server(boost::asio::io_context& context,domain_details& domain){
+void network_operands::start_server(boost::asio::io_context &context,domain_details &domain){
     try{
 
         server.open_lis_con(context,domain);
