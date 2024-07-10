@@ -23,7 +23,9 @@ class network_operands{
 void network_operands::start_server(boost::asio::io_context &context,domain_details &domain){
     try{
 
-        server.open_lis_con(context,domain);
+        server_operands engine(context);
+
+        server.open_lis_con(domain);
 
         context.run();
 
