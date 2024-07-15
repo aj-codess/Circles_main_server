@@ -27,8 +27,6 @@ void network_operands::start_server(boost::asio::io_context &context,domain_deta
 
         server.open_lis_con(domain);
 
-        context.run();
-
     } catch(const exception& e){
 
         cout<<"Error Starting Server - "<<e.what()<<endl;
