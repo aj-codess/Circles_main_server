@@ -22,8 +22,6 @@ struct domain_details{
 
 class server_operands{
     private:
-    bool stop_ioc=false;
-    void socket_handler(boost::asio::ip::tcp::socket socket);
     void open_acceptor();
     boost::asio::io_context& ioc;
     boost::asio::ip::tcp::endpoint circles_endpoint;
@@ -31,6 +29,7 @@ class server_operands{
     boost::asio::executor_work_guard<boost::asio::io_context::executor_type> idle_work;
     boost::asio::ip::tcp::resolver resolver;
     void accept_client();
+    void socket_conn_handler(boost::asio::ip::tcp::socket socket);
 
     public:
     bool isOpen=false;
@@ -45,77 +44,6 @@ class server_operands{
         : ioc(context), l_acceptor(context), idle_work(boost::asio::make_work_guard(context)), resolver(context) {};
 
 } server;
-
-
-
-void server_operands::open_acceptor() {
-
-    this->l_acceptor.open(this->circles_endpoint.protocol());
-    
-    this->l_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-    
-    this->l_acceptor.bind(this->circles_endpoint);
-    
-    this->l_acceptor.listen();
-    
-    std::cout << "Server endpoint is - " << this->circles_endpoint << std::endl;
-
-    this->accept_client();
-
-        std::thread ioc_thread([this]{
-            ioc.run();
-        });
-
-
-        if(ioc_thread.joinable()){
-            ioc_thread.join();
-        };
-    
-    //this->open_acceptor();
-
-};
-
-
-
-
-void server_operands::accept_client() {
-
-    auto socket=make_shared<boost::asio::ip::tcp::socket>(ioc);
-
-    this->l_acceptor.async_accept(*socket, [this,socket](const boost::system::error_code& error){
-
-        if(error){
-            cout<<"error accepting - "<<error.message()<<endl;
-
-            this->stop_ioc=true;
-
-            this->open_acceptor();
-        };
-
-
-        try{
-
-            if(socket->is_open()){
-
-                this->isOpen=true;
-
-                cout<<"Client accepted with remote enpoint - "<<socket->remote_endpoint()<<endl;
-
-            };
-
-            this->accept_client();
-
-        } catch(const exception& e){
-
-            cout<<"hold in the accepting process - "<<e.what()<<endl;
-
-            this->accept_client();
-
-        };
-
-    });
-
-};
 
 
 
@@ -139,7 +67,76 @@ try{
 
 
 
-void server_operands::socket_handler(boost::asio::ip::tcp::socket socket){
+void server_operands::open_acceptor() {
+
+    this->l_acceptor.open(this->circles_endpoint.protocol());
+    
+    this->l_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+    
+    this->l_acceptor.bind(this->circles_endpoint);
+    
+    this->l_acceptor.listen();
+    
+    std::cout << "Server endpoint is - " << this->circles_endpoint << std::endl;
+
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard(ioc.get_executor());
+
+    this->accept_client();
+
+    ioc.run();
+    
+    //this->open_acceptor();
+
+};
+
+
+
+
+
+
+
+void server_operands::accept_client() {
+
+    auto socket=make_shared<boost::asio::ip::tcp::socket>(ioc); 
+
+    this->l_acceptor.async_accept(*socket, [this,socket](const boost::system::error_code& error){
+        
+        if(error){
+            cout<<"error accepting - "<<error.message()<<endl;
+
+            this->open_acceptor();
+
+            return;
+        };
+
+
+        try{
+
+            if(socket->is_open()){
+
+                this->isOpen=true;
+
+                cout<<"Client accepted with remote enpoint - "<<socket->remote_endpoint()<<endl;
+            
+            };
+
+            this->accept_client();
+
+        } catch(const exception& e){
+
+            cout<<"hold in the accepting process - "<<e.what()<<endl;
+
+            this->accept_client();
+
+        };
+
+    });
+
+};
+
+
+
+void server_operands::socket_conn_handler(boost::asio::ip::tcp::socket socket){
 
     boost::system::error_code ec;
 
