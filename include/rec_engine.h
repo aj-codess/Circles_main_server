@@ -126,7 +126,6 @@ bool recommendation_operands::delete_topic(std::string id,std::string topic_2_de
 
   if(this->id_finder(id)==true){
     auto itr=id_2_topic[id].find(this->up_conv(topic_2_delete));
-
     if(itr!=id_2_topic[id].end()){
 
       id_2_topic[id].erase(this->up_conv(topic_2_delete));
