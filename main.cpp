@@ -11,7 +11,7 @@ using namespace std;
 class network_operands {
 public:
     void start_server(domain_details& domain);
-
+    
     network_operands(boost::asio::io_context& context) : server(context) {};
 
 
