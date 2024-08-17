@@ -59,23 +59,37 @@ class creator_operands{
 
 
 bool creator_operands::create(std::string id,std::string ownership_id,std::string space_name,std::string owner_long_lat[],bool options[]){
+    
     std::unique_ptr<bool> isCreated=std::make_unique<bool>();
 
     if(exists(id,space_name)==true){
+
         *isCreated=false;
+
     } else{
 
         space_containers[id]=data_2_hold();
+
         space_containers[id].ownership_id=ownership_id;
+        
         space_containers[id].space_name=space_name;
+        
         this->name_pool.push_back(space_name);
+        
         // space_containers[id].loc_latitude;
+        
         // space_containers[id].loc_latitude;
+        
         // long and lat of the location where space was created
+        
         space_containers[id].log_info.owner_long=owner_long_lat[0];
+        
         space_containers[id].log_info.owner_lat=owner_long_lat[1];
+        
         space_containers[id].log_info.isOpen=options[0];
+        
         space_containers[id].log_info.man_aut=options[1];
+        
         space_containers[id].log_info.timer_open=options[2];
 
         *isCreated=true;
@@ -87,6 +101,7 @@ bool creator_operands::create(std::string id,std::string ownership_id,std::strin
 
 
 bool creator_operands::name_checker(std::string space_name){
+
     std::unique_ptr<bool> name_exists=std::make_unique<bool>();
 
     auto itr=std::find(name_pool.begin(),name_pool.end(),space_name);
@@ -118,6 +133,7 @@ bool creator_operands::exists(std::string space_id,std::string space_name=""){
 
 
 bool creator_operands::join(std::string space_id,std::string user_id){
+
     std::unique_ptr<bool> isJoined=std::make_unique<bool>();
 
     if(this->exists(space_id)==true){
@@ -125,22 +141,27 @@ bool creator_operands::join(std::string space_id,std::string user_id){
         if(space_containers[space_id].log_info.isOpen == true && space_containers[space_id].log_info.timer_open==false){
 
             space_containers[space_id].space_piece.push_back(user_id);
+
             *isJoined=true;
 
         } else if(space_containers[space_id].log_info.isOpen==true && space_containers[space_id].log_info.timer_open==true){
 
             space_containers[space_id].awaiting_space_piece.push_back(user_id);
+
             *isJoined=true;
 
         } else if(space_containers[space_id].log_info.isOpen==true && space_containers[space_id].log_info.man_aut==true){
 
             space_containers[space_id].awaiting_space_piece.push_back(user_id);
+
             *isJoined=true;
 
         };
 
     } else{
+
         *isJoined=false;
+
     };
 
     return *isJoined;
@@ -154,6 +175,7 @@ bool creator_operands::delete_space(std::string space_id,std::string user_id){
     std::unique_ptr<bool> isDeleted=std::make_unique<bool>();
 
     std::unique_ptr<bool> exists=std::make_unique<bool>();
+
     *exists=this->exists(space_id);
 
     if(*exists==true && space_containers[space_id].ownership_id==user_id){
@@ -196,10 +218,13 @@ if(this->exists(space_id) && user_id==space_containers[space_id].ownership_id){
 
 
 std::vector<std::string> creator_operands::get_awaiting(std::string space_id,std::string owners_id){
+
     std::unique_ptr<std::vector<std::string>> awaiting_list=std::make_unique<std::vector<std::string>>();
 
     if(this->exists(space_id)==true && space_containers[space_id].ownership_id==owners_id){
+
         *awaiting_list=space_containers[space_id].awaiting_space_piece;
+
     };
 
     return *awaiting_list;
@@ -208,32 +233,44 @@ std::vector<std::string> creator_operands::get_awaiting(std::string space_id,std
 
 
 std::vector<std::string> creator_operands::get_space_piece(std::string space_id){
+
     std::unique_ptr<std::vector<std::string>> pieces=std::make_unique<std::vector<std::string>>();
 
     if(this->exists(space_id)==true){
+
         *pieces=space_containers[space_id].space_piece;
+
     };
 
     return *pieces;
+
 };
 
 
 
 
 bool creator_operands::accept_in_space(std::string space_id,std::string owners_id,std::string sub_admin,std::string awaiting_user){
+
     std::unique_ptr<bool> isAccepted=std::make_unique<bool>();
 
         auto checks=std::find(space_containers[space_id].sub_owners.begin(),space_containers[space_id].sub_owners.end(),sub_admin);
 
     if(this->exists(space_id)==true && space_containers[space_id].ownership_id==owners_id || checks!=space_containers[space_id].sub_owners.end()){
+
         auto itr=std::find(space_containers[space_id].awaiting_space_piece.begin(),space_containers[space_id].awaiting_space_piece.end(),awaiting_user);
 
         if(itr==space_containers[space_id].awaiting_space_piece.end()){
+
             *isAccepted=false;
+
         } else{
+
             space_containers[space_id].space_piece.push_back(awaiting_user);
+
             space_containers[space_id].awaiting_space_piece.erase(itr);
+
             *isAccepted=true;
+
         };
 
     };
@@ -245,16 +282,23 @@ bool creator_operands::accept_in_space(std::string space_id,std::string owners_i
 
 
 bool creator_operands::make_admin(std::string space_id,std::string owners_id,std::string user_2_admin_id){
+
     std::unique_ptr<bool> isSubAdmin=std::make_unique<bool>();
 
     if(this->exists(space_id)==true && space_containers[space_id].ownership_id==owners_id){
+
         auto itr=std::find(space_containers[space_id].space_piece.begin(),space_containers[space_id].space_piece.end(),user_2_admin_id);
 
         if(itr!=space_containers[space_id].space_piece.end()){
+
             space_containers[space_id].sub_owners.push_back(user_2_admin_id);
+
             *isSubAdmin=true;
+
         } else{
+
             *isSubAdmin=false;
+
         };
 
     } else{
@@ -268,6 +312,7 @@ bool creator_operands::make_admin(std::string space_id,std::string owners_id,std
 
 
 bool creator_operands::remove_admin(std::string space_id,std::string owners_id,std::string admin_2_remove_id){
+
     std::unique_ptr<bool> isRemoved=std::make_unique<bool>();
 
     if(this->exists(space_id)==true && space_containers[space_id].ownership_id==owners_id){
@@ -275,10 +320,15 @@ bool creator_operands::remove_admin(std::string space_id,std::string owners_id,s
         auto itr=std::find(space_containers[space_id].sub_owners.begin(),space_containers[space_id].sub_owners.end(),admin_2_remove_id);
 
         if(itr!=space_containers[space_id].space_piece.end()){
+
             space_containers[space_id].sub_owners.erase(itr);
+
             *isRemoved=true;
+
         } else{
+
             *isRemoved=false;
+
         };
     }
 
@@ -288,15 +338,21 @@ bool creator_operands::remove_admin(std::string space_id,std::string owners_id,s
 
 
 bool creator_operands::add_2_space(std::string space_id,std::string owners_id,std::string sub_admin,std::string id_2_add){
+
     std::unique_ptr<bool> isAdded=std::make_unique<bool>();
 
     auto checks=std::find(space_containers[space_id].sub_owners.begin(),space_containers[space_id].sub_owners.end(),id_2_add);
 
     if(this->exists(space_id)==true && space_containers[space_id].ownership_id==owners_id || checks!=space_containers[space_id].sub_owners.end()){
+
         space_containers[space_id].space_piece.push_back(id_2_add);
+
         *isAdded=true;
+
     } else{
+
         *isAdded=false;
+
     };
 
     return *isAdded;
@@ -305,24 +361,31 @@ bool creator_operands::add_2_space(std::string space_id,std::string owners_id,st
 
 
 bool creator_operands::remove_piece(std::string space_id,std::string owners_id,std::string sub_admin,std::string id_2_remove){
+
     std::unique_ptr<bool> isRemoved=std::make_unique<bool>();
 
     auto itr=std::find(space_containers[space_id].sub_owners.begin(),space_containers[space_id].sub_owners.end(),sub_admin);
 
     if(this->exists(space_id)==true && space_containers[space_id].ownership_id==owners_id || itr!=space_containers[space_id].sub_owners.end()){
+
         auto checks=std::find(space_containers[space_id].space_piece.begin(),space_containers[space_id].space_piece.end(),id_2_remove);
 
         if(checks!=space_containers[space_id].space_piece.end()){
             
             space_containers[space_id].space_piece.erase(checks);
+
             *isRemoved=true;
 
         } else{
+
             *isRemoved=false;
+
         };
         
     } else{
+
         *isRemoved=false;
+
     }
 
     return *isRemoved;
@@ -332,6 +395,7 @@ bool creator_operands::remove_piece(std::string space_id,std::string owners_id,s
 
 
 std::string creator_operands::get_space_owners_id(std::string space_id){
+
     std::unique_ptr<std::string> isOwner=std::make_unique<std::string>();
 
     if(this->exists(space_id)==true){
@@ -347,6 +411,7 @@ std::string creator_operands::get_space_owners_id(std::string space_id){
 
 
 std::vector<std::string> creator_operands::get_space_sub_admins(std::string space_id){
+
     std::unique_ptr<std::vector<std::string>> sub_owners=std::make_unique<std::vector<std::string>>();
 
     if(this->exists(space_id)==true){

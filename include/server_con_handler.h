@@ -9,11 +9,13 @@
 #include <utility>
 
 #include <boost/asio.hpp>
-#include <socket_in_thread_handler.h>
+#include <boost/asio/spawn.hpp>
+#include <boost/beast.hpp>
+
+#include <socket_handler.h>
 
 using namespace std;
 
-thread_handler thread_operands;
 
 struct domain_details {
     std::string host_url;
@@ -30,6 +32,8 @@ private:
     bool isOpen;
     void open_acceptor();
     void accept_client();
+
+    //socket_handler socket_han;
 
 public:
     server_operands(boost::asio::io_context& context)
@@ -93,8 +97,8 @@ void server_operands::accept_client() {
                 isOpen = true;
 
                 cout << "Client accepted with remote endpoint - " << socket->remote_endpoint() << endl;
-            
-                
+
+                boost::asio::spawn(ioc, std::bind(&socket_handler::io_handler, std::move(socket), std::placeholders::_1));
 
             }
 
