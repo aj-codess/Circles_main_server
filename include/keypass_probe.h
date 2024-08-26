@@ -27,13 +27,21 @@ class P_probe_class{
 
 
 bool P_probe_class::length_check(){
+
     bool* func_say=new bool;
+
     if(this->key.length() >= this->keyLength_min_lim && this->key.length() <= this->keyLength_max_lim){
+
         *func_say=true;
+
         } else{
+
             *func_say=false;
+
         };
+
     return *func_say;
+
     delete func_say;
 };
 
@@ -43,20 +51,30 @@ bool P_probe_class::hash_checks(std::string key,std::string dataBase_hash_key){
     bool* hasher_check=new bool;
 
     if(key.size()==dataBase_hash_key.size() && key==dataBase_hash_key){
+
         *hasher_check=true;
+
     } else{
+
         *hasher_check=false;
+
     };
+
     return *hasher_check;
+
     delete hasher_check;
 };
 
 
 
 bool P_probe_class::comparism(){
+
     bool* say=new bool;
+
         this->key==this->second_opt_key?*say=true:*say=false;
+
         return *say;
+        
         delete say;
 };
 
@@ -67,7 +85,9 @@ bool P_probe_class::matcher(std::string key,std::string hash_key){
     bool* func_say=new bool;
 
 this->hash_checks(key,hash_key)==true?*func_say=true:*func_say=false;
+
     return *func_say;
+
     delete func_say;
 };
 

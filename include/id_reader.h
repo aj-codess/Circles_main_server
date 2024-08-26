@@ -36,11 +36,16 @@ class id_reader_class{
 std::string useCase[6]={"user","ugc","space","space_ugc","chat","space_c"};
 
 
+
+
+
 std::string id_reader_class::get_timestamp(std::string string_time_junk){
 
     time_t time_value=std::stoll(string_time_junk);
 
-    char* junk_time=std::ctime(&time_value);
+    decltype(time_value) divider=(time_value/1000);
+
+    char* junk_time=std::ctime(&divider);
 
     return std::string(junk_time);
 };
