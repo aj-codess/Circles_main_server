@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/aj/code/Berita/Circles_main_server/build",
+  "command": "/usr/bin/c++ -DBOOST_CONTEXT_EXPORT=\"\" -DBOOST_CONTEXT_NO_LIB=\"\" -DBOOST_CONTEXT_STATIC_LINK=\"\" -DBOOST_COROUTINE_NO_LIB -DBOOST_COROUTINE_STATIC_LINK -DBOOST_URL_NO_LIB=1 -DBOOST_URL_STATIC_LINK=1 -I/home/aj/code/Berita/Circles_main_server/include -isystem /home/aj/code/Berita/vcpkg/installed/x64-linux/include  -std=c++17 -g -std=gnu++17 -o CMakeFiles/main.dir/main.cpp.o -c /home/aj/code/Berita/Circles_main_server/main.cpp",
+  "file": "/home/aj/code/Berita/Circles_main_server/main.cpp",
+  "output": "CMakeFiles/main.dir/main.cpp.o"
+}
+]

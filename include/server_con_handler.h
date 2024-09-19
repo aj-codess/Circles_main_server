@@ -140,9 +140,33 @@ void server_operands::socket_handler(std::shared_ptr<boost::asio::ip::tcp::socke
 
             boost::beast::http::async_read(stream_socket,buffer,req,yield_ioc);
 
-            this->req_res.structure
+            this->req_res.structure(req,res);
+
+            boost::beast::http::async_write(stream_socket,req,yield_ioc);
+
+            if (req.need_eof()) {
+
+                boost::beast::error_code shutdown_ec;
+
+                stream_socket.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_send, shutdown_ec);
+
+                isDisconnected = true;
+
+                if (shutdown_ec) {
+
+                    cout << "Error shutting down: " << shutdown_ec.message() << endl;
+
+                }
+
+                break;
+            }
+
         } catch(const std::exception& e){
             cout<<"Error with session - "<<e.what()<<endl;
         };
+
+        if(isDisconnected==true){
+            break;
+        }
     }
 };
