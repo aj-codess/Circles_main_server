@@ -6,19 +6,24 @@
 #include <boost/asio.hpp>
 
 #include <server_con_handler.h>
+#include <id_gen_connector.h>
 
 using namespace std;
+
+domain_details id_serverDomain;
 
 class network_operands {
 public:
     void start_server(domain_details& domain);
     
-    network_operands(boost::asio::io_context& context) : server(context) {};
+    network_operands(boost::asio::io_context& context) : server(context),id_pipe(context,{"localhost","8080"}) {
+
+    };
 
 
 private:
     server_operands server;
-
+    id_gen_con id_pipe;
 };
 
 void network_operands::start_server(domain_details& domain) {

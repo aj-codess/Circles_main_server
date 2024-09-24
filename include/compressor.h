@@ -4,6 +4,7 @@
 #include <string>
 #include <zlib.h>
 #include <vector>
+#include <memory>
 
 using namespace std;
 

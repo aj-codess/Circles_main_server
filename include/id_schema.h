@@ -7,6 +7,8 @@
 #include <memory>
 #include <vector>
 
+#include <id_gen_connector.h>
+
 using namespace std;
 
 class id_schema{
@@ -22,6 +24,9 @@ class id_schema{
     uint64_t current_space;
     std::vector<uint64_t> unoccupied_space;
     short current_time_id_len;
+
+    private:
+    id_gen_con id_server;
 } schema;
 
 //update current and unoccupied from dataabase.
