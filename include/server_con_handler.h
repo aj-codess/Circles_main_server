@@ -144,7 +144,7 @@ void server_operands::socket_handler(std::shared_ptr<boost::asio::ip::tcp::socke
 
             boost::beast::http::async_write(stream_socket,req,yield_ioc);
 
-            if (req.need_eof()) {
+            if (res.need_eof()) {
 
                 boost::beast::error_code shutdown_ec;
 
@@ -156,7 +156,7 @@ void server_operands::socket_handler(std::shared_ptr<boost::asio::ip::tcp::socke
 
                     cout << "Error shutting down: " << shutdown_ec.message() << endl;
 
-                }
+                };
 
                 break;
             }

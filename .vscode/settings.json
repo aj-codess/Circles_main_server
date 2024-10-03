@@ -85,6 +85,19 @@
         "format": "cpp",
         "stop_token": "cpp",
         "thread": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "csignal": "cpp",
+        "any": "cpp",
+        "codecvt": "cpp",
+        "coroutine": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "set": "cpp",
+        "source_location": "cpp",
+        "ranges": "cpp",
+        "shared_mutex": "cpp",
+        "stdfloat": "cpp",
+        "typeindex": "cpp",
+        "valarray": "cpp"
     }
 }

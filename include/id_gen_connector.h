@@ -17,13 +17,24 @@ struct domain_struc{
 };
 
 
+struct payload_opt{
+    bool persistent;
+    bool del;
+    std::string option="";
+    std::string user_id="";
+    std::string space_id="";
+    std::string ugc_id="";
+
+    payload_opt()=default;
+};
+
 class id_gen_con{
     private:
     boost::asio::io_context& ioc;
     domain_struc domain_dtl;
     boost::asio::ip::tcp::resolver resolver;
     boost::asio::ip::tcp::resolver::results_type resolved_address;
-    void io_pipe(boost::asio::yield_context yield_ioc);
+    void server_init();
 
     public:
         id_gen_con()=default;
@@ -40,8 +51,7 @@ class id_gen_con{
             };
         };
 
-    void server_init();
-    void connect_init();
+    void io_pipe(payload_opt payload,std::function<void(boost::beast::http::response<boost::beast::http::string_body>)> callback);
 };
 
 
@@ -60,7 +70,6 @@ void id_gen_con::server_init(){
             if(!this->resolved_address.empty())
             cout<<" Address Resolved "<<endl;
 
-            this->connect_init();
         };
 
     });
@@ -69,16 +78,7 @@ void id_gen_con::server_init(){
 
 
 
-void id_gen_con::connect_init(){
-
-    boost::asio::spawn(ioc,[this](boost::asio::yield_context yield_ioc){
-        this->io_pipe(yield_ioc);
-    });
-
-};
-
-
-void id_gen_con::io_pipe(boost::asio::yield_context yield_ioc){
+void id_gen_con::io_pipe(payload_opt payload,std::function<void(boost::beast::http::response<boost::beast::http::string_body>)> callback){
 
     struct con{
         boost::beast::tcp_stream stream_socket;
@@ -90,6 +90,25 @@ void id_gen_con::io_pipe(boost::asio::yield_context yield_ioc){
     auto state=std::make_shared<con>(con{boost::beast::tcp_stream{boost::asio::make_strand(ioc)}});
 
     state->stream_socket.expires_after(std::chrono::seconds(30));
+
+
+// struct payload_opt{
+//     bool persistent;
+//     bool del;
+//     std::string option="";
+//     std::string user_id="";
+//     std::string space_id="";
+//     std::string ugc_id="";
+
+//     payload_opt()=default;
+// };
+    auto req_writter=[&](payload_opt& payload){
+
+        state->req.method(boost::beast::http::verb::get);
+
+    };
+
+    req_writter(payload);
 
     try{
 
@@ -135,7 +154,7 @@ void id_gen_con::io_pipe(boost::asio::yield_context yield_ioc){
                 });
 
             } else{
-                cout<<"error Writing to Remote - "<<ec.message()<<endl;
+                cout<<"Error Connecting to Remote Server - "<<ec.message()<<endl;
             };
 
         });

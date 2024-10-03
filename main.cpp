@@ -26,6 +26,8 @@ private:
     id_gen_con id_pipe;
 };
 
+
+
 void network_operands::start_server(domain_details& domain) {
 
     try {
@@ -35,7 +37,7 @@ void network_operands::start_server(domain_details& domain) {
     } catch (const exception& e) {
 
         cout << "Error Starting Server - " << e.what() << endl;
-    }
+    };
 
 };
 
