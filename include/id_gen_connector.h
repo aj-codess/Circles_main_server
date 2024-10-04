@@ -9,6 +9,8 @@
 #include <boost/coroutine/all.hpp>
 #include <boost/beast.hpp>
 
+#include <nlohmann/json.hpp>
+
 using namespace std;
 
 struct domain_struc{
@@ -24,6 +26,9 @@ struct payload_opt{
     std::string user_id="";
     std::string space_id="";
     std::string ugc_id="";
+    std::string del_opt="";
+    std::string user_pos="";
+    std::string space_pos="";
 
     payload_opt()=default;
 };
@@ -92,34 +97,82 @@ void id_gen_con::io_pipe(payload_opt payload,std::function<void(boost::beast::ht
     state->stream_socket.expires_after(std::chrono::seconds(30));
 
 
-// struct payload_opt{
-//     bool persistent;
-//     bool del;
-//     std::string option="";
-//     std::string user_id="";
-//     std::string space_id="";
-//     std::string ugc_id="";
+    auto req_writter=[&](payload_opt payload){
 
-//     payload_opt()=default;
-// };
-    auto req_writter=[&](payload_opt& payload){
+        state->req.set(boost::beast::http::field::host, this->domain_dtl.host);
 
-        state->req.method(boost::beast::http::verb::get);
+        state->req.set(boost::beast::http::field::content_type,"application/json");
 
+        nlohmann::json json_body;
+        
+        if(payload.persistent==true && payload.del==false){
+
+            state->req.method(boost::beast::http::verb::get);
+
+            state->req.target("/beryl/persistent_data");
+
+        } else if(payload.persistent==false && payload.del==false){
+
+            state->req.method(boost::beast::http::verb::get);
+
+            json_body={
+                {"option",payload.option},
+                {"user_id",payload.user_id},
+                {"space_id",payload.space_id}
+            };
+
+            std::string request_param="option="+payload.option+"&user_id="+payload.user_id+"&space_id="+payload.space_id;
+
+            state->req.target("beryl/id"+request_param);
+
+        } else if(payload.persistent==false && payload.del==true){
+
+            state->req.method(boost::beast::http::verb::delete_);
+
+            if(payload.del_opt=="user"){
+
+                json_body={
+                    {"user_id",payload.user_id},
+                    {"user_pos",payload.user_pos}
+                };
+
+            } else if(payload.del_opt=="space"){
+
+                json_body={
+                    {"space_id",payload.space_id},
+                    {"space_pos",payload.space_pos}
+                };
+
+            } else if(payload.del_opt=="ugc"){
+
+                json_body={
+                    {"user_id",payload.user_id},
+                    {"ugc_id",payload.ugc_id}
+                };
+
+            };
+
+            state->req.body()=json_body.dump();
+
+        };
+
+        state->req.prepare_payload();
     };
 
     req_writter(payload);
 
+
     try{
 
         state->stream_socket.async_connect(this->resolved_address,
-        [state](boost::system::error_code ec,boost::asio::ip::tcp::endpoint ep){
+        [state,callback=std::move(callback)](boost::system::error_code ec,boost::asio::ip::tcp::endpoint ep){
 
             state->stream_socket.expires_after(std::chrono::seconds(30));
 
             if(!ec){
 
-                boost::beast::http::async_write(state->stream_socket,state->req,[state](boost::beast::error_code ec,std::size_t size){
+                boost::beast::http::async_write(state->stream_socket,state->req,
+                [state,callback=std::move(callback)](boost::beast::error_code ec,std::size_t size){
                     boost::ignore_unused(size);
 
                     if(ec){
@@ -129,7 +182,7 @@ void id_gen_con::io_pipe(payload_opt payload,std::function<void(boost::beast::ht
 
                         boost::beast::http::async_read(
                                     state->stream_socket, state->buffer, state->res,
-                                    [state](boost::beast::error_code ec, size_t transfered_size){
+                                    [state,callback=std::move(callback)](boost::beast::error_code ec, size_t transfered_size){
                                         boost::ignore_unused(transfered_size);
 
                                         if (ec) {
@@ -147,6 +200,14 @@ void id_gen_con::io_pipe(payload_opt payload,std::function<void(boost::beast::ht
                                                     std::cout << "Error shutting down: " << shutdown_ec.message()
                                                             << std::endl;
                                                 }
+                                            };
+
+
+
+                                            if(callback){
+                                                auto res_send=std::move(state->res);
+
+                                                callback(res_send);
                                             };
                                     });
 
