@@ -35,7 +35,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
     switch(req.method()){
 
         case boost::beast::http::verb::get:
-            if(this->url)
+            
             
         break;
 
