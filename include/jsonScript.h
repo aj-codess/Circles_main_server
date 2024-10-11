@@ -87,11 +87,11 @@ login_init jsonScript::conv_log_data(boost::beast::http::request<boost::beast::h
 
     if(json_body.find("gmail") != json_body.end() && json_body.find("password") != json_body.end()){
 
-        log_info={json_body["gmail"].get<std::string>(),json_body["password"].get<std::string>(),nullptr,nullptr};
+        log_info={json_body["gmail"].get<std::string>(),json_body["password"].get<std::string>(),"",""};
 
     } else if(json_body.find("phone") != json_body.end() && json_body.find("bio_data") != json_body.end()){
 
-        log_info={nullptr,nullptr,json_body["phone"].get<std::string>(),json_body["bio_data"].get<std::string>()};
+        log_info={"","",json_body["phone"].get<std::string>(),json_body["bio_data"].get<std::string>()};
 
     };
 

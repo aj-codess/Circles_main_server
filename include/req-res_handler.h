@@ -29,6 +29,7 @@ class req_res_handler{
     std::string generate_token(std::string user_id);
     bool token_vir(std::string token);
     jsonScript script;
+    log_controller controller;
 };
 
 
@@ -54,12 +55,6 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                         callback(aut.substr(7));
                     };
 
-                };
-
-            } else{
-
-                if(callback){
-                    callback(nullptr);
                 };
 
             };
@@ -121,7 +116,9 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
         res.set(boost::beast::http::field::content_type,"application/json");
 
-        this->script.conv_log_data(req);
+        this->controller.mail_pass_checks(this->script.conv_log_data(req),[](bool isPassed){
+
+        });
             
         break;
 

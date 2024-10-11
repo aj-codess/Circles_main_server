@@ -110,7 +110,7 @@ bool id_schema::del_user(id_info id_struct){
 
     std::string server_position=id_struct.pos_on_server;
 
-    payload_opt payload_req={false,true,nullptr,user_id,nullptr,nullptr,"user",server_position};
+    payload_opt payload_req={false,true,"",user_id,"","","user",server_position};
 
     this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
@@ -135,7 +135,7 @@ bool id_schema::del_space(id_info id_struct){
 
     std::string server_position=id_struct.pos_on_server;
 
-    payload_opt payload_req={false,true,nullptr,nullptr,space_id,nullptr,"space",nullptr,server_position};
+    payload_opt payload_req={false,true,"","",space_id,"","space","",server_position};
 
     this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
@@ -160,7 +160,7 @@ bool id_schema::del_ugc(id_info id_struct){
 
     std::string ugc_id=id_struct.useCase+id_struct.time;
 
-    payload_opt payload_req={false,true,nullptr,user_id,nullptr,ugc_id,"ugc"};
+    payload_opt payload_req={false,true,"",user_id,"",ugc_id,"ugc"};
 
     this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
