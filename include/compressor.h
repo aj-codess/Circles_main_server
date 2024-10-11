@@ -19,22 +19,22 @@ class shrink_operands{
 
 
 std::string shrink_operands::reader(std::vector<unsigned char> x){
-    std::unique_ptr<string> out=std::make_unique<string>();
+    std::string out;
 
     short i=0;
 
     while(i<x.size()){
-        *out+=x.at(i);
+        out+=x.at(i);
         i++;
     };
 
-    return *out;
+    return out;
 };
 
 
 
 std::string shrink_operands::compress(std::string data){
-    std::unique_ptr<std::string> junk=std::make_unique<string>();
+    std::string junk;
 
     std::unique_ptr<std::vector<unsigned char>> com_data=std::make_unique<std::vector<unsigned char>>();
 
@@ -48,7 +48,8 @@ std::string shrink_operands::compress(std::string data){
 
     if(*status != Z_OK){
         // "Error Compressing";
-        this->compress(data);
+        // this->compress(data);
+        throw std::runtime_error("Error compressing data");
     };
 
     com_data->resize(compressBound(data.size()));
@@ -71,9 +72,10 @@ std::string shrink_operands::compress(std::string data){
     int* compressed_size=new int;
     *compressed_size = com_data->size() - stream.avail_out;
     com_data->push_back(*compressed_size);
-    *junk=this->reader(*com_data);
+    junk=this->reader(*com_data);
 
-    return *junk;
     delete compressed_size;
     delete status;
+
+    return junk;
 };

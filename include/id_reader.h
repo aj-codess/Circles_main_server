@@ -12,21 +12,6 @@
 
 using namespace std;
 
-    struct id_info{
-        std::string useCase;
-        std::string time;
-        std::string pos_on_server;
-        id_info* user;
-        id_info* space_id;
-    };
-
-
-    struct persistent{
-        uint64_t current_user_n;
-        uint64_t current_space_n;
-        uint64_t current_time_len;
-    };
-
 class id_reader_class{
     private:
     uint64_t current_user_n;
@@ -89,8 +74,6 @@ id_info id_reader_class::analyse_02(std::string id){
 
     return analyse_02_struct;
 };
-
-
 
 
 

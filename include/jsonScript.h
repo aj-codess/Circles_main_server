@@ -8,18 +8,26 @@
 #include <boost/beast.hpp>
 
 using namespace std;
+struct login_init{
+    std::string gmail="";
+    std::string password="";
+    std::string phone="";
+    std::string bio_data="";
+
+    login_init()=default;
+};
 
 class jsonScript{
     private:
 
     public:
-    std::string id_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::function<void(std::string)> callback);
-    std::string bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::function<void(bool)> callback);
+    void id_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(std::string)> callback);
+    void bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback);
+    login_init conv_log_data(boost::beast::http::request<boost::beast::http::string_body> res);
 };
 
 
-std::string jsonScript::id_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(std::string)> callback){
-    std::string to_return;
+void jsonScript::id_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(std::string)> callback){
 
     try{
         nlohmann::json json_body=nlohmann::json::parse(res.body());
@@ -28,7 +36,11 @@ std::string jsonScript::id_conv(boost::beast::http::response<boost::beast::http:
             cout<<"id not found"<<endl;
         } else{
             if(callback){
-                callback(json_body[target]);
+
+                std::string id=json_body[target].get<std::string>();
+
+                callback(id);
+
             };
         };
 
@@ -36,13 +48,11 @@ std::string jsonScript::id_conv(boost::beast::http::response<boost::beast::http:
         cout<<"Error Parsing - "<<e.what();
     };
 
-    return to_return;
 };
 
 
-bool jsonScript::bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback){
-    bool returner;
-
+void jsonScript::bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback){
+    
     try{
         nlohmann::json json_body=nlohmann::json::parse(res.body());
 
@@ -53,7 +63,11 @@ bool jsonScript::bool_conv(boost::beast::http::response<boost::beast::http::stri
         } else{
 
           if(callback){
-            callback(json_body[target]);
+
+            bool deleted=json_body[target].get<bool>();
+
+            callback(deleted);
+
           };  
 
         };
@@ -62,5 +76,24 @@ bool jsonScript::bool_conv(boost::beast::http::response<boost::beast::http::stri
         cout<<"Error Parsing - "<<e.what()<<endl;
     };
 
-    return returner;
 };
+
+
+login_init jsonScript::conv_log_data(boost::beast::http::request<boost::beast::http::string_body> req){
+
+    login_init log_info;
+
+    nlohmann::json json_body=nlohmann::json::parse(req.body());
+
+    if(json_body.find("gmail") != json_body.end() && json_body.find("password") != json_body.end()){
+
+        log_info={json_body["gmail"].get<std::string>(),json_body["password"].get<std::string>(),nullptr,nullptr};
+
+    } else if(json_body.find("phone") != json_body.end() && json_body.find("bio_data") != json_body.end()){
+
+        log_info={nullptr,nullptr,json_body["phone"].get<std::string>(),json_body["bio_data"].get<std::string>()};
+
+    };
+
+    return log_info;
+}; 

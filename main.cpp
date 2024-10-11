@@ -7,6 +7,9 @@
 
 #include <server_con_handler.h>
 #include <id_gen_connector.h>
+#include <fstream>
+#include <hasher.h>
+#include <compressor.h>
 
 using namespace std;
 
@@ -18,12 +21,39 @@ public:
     
     network_operands(boost::asio::io_context& context) : server(context),id_pipe(context,{"localhost","8080"}) {
 
+        auto env_writter=[&](){
+
+            std::ofstream path(ENV);
+
+            if (path.is_open()) {
+
+                try{
+
+                    std::string gen=hasher.hash(shrink.compress(GLOBAL));
+
+                    path<<gen<<endl;
+
+                    path.close();
+
+                } catch(const std::exception e){
+
+                    cout<<"unable to write env - "<<e.what()<<endl;
+
+                };
+
+            };
+        };
+
+        env_writter();
+
     };
 
 
 private:
     server_operands server;
     id_gen_con id_pipe;
+    hasher_class hasher;
+    shrink_operands shrink;
 };
 
 

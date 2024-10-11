@@ -4,10 +4,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_TOOLCHAIN_FILE /home/aj/code/Berita/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
+set(GLOBAL "GenuTech->circujoin")
+
 project(Circles_Server_Engine VERSION 1.0)
 
 add_executable(main main.cpp)
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+set(ENV_PATH "./include/env.txt")
+
+target_compile_definitions(main PRIVATE GLOBAL="${GLOBAL}")
+target_compile_definitions(main PRIVATE ENV="${ENV_PATH}")
 
 find_package(Boost)
 target_include_directories(main PUBLIC ${Boost_INCLUDE_DIR})
@@ -34,3 +41,5 @@ target_link_libraries(main PUBLIC libpqxx::pqxx ${libpqxx_LIBRARIES} ${libpqxx_D
 find_package(OpenSSL REQUIRED)
 target_include_directories(main PUBLIC ${OpenSSL_INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${OpenSSL_LIBRARIES} ${OpenSSL_DEPENDENCIES})
+
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../vcpkg/installed/x64-linux/include/jwt-cpp)
