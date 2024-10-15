@@ -5,6 +5,7 @@
 #include <memory>
 #include <array>
 #include <chrono>
+#include <functional>
 
 #include <id_schema.h>
 #include <nlohmann/json.hpp>

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <functional>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>

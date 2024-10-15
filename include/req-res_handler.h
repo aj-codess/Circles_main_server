@@ -6,6 +6,7 @@
 
 #include <log_controller.h>
 #include <jsonScript.h>
+#include <new_handler.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -30,6 +31,7 @@ class req_res_handler{
     bool token_vir(std::string token);
     jsonScript script;
     log_controller controller;
+    handler foreign_token;
 };
 
 
@@ -43,7 +45,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
         std::string token;
 
-        auto extract_token=[&](std::function<void(std::string ach_token)> callback){
+        auto extract_token=[&](std::function<void(std::string)> callback){
 
             if(req.find(boost::beast::http::field::authorization) != req.end()){
 
@@ -55,7 +57,19 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                         callback(aut.substr(7));
                     };
 
+                } else{
+
+                    //create the session token
+
+                    res.result(boost::beast::http::status::forbidden);
+
+                    res.body()="session Lost.";
+
                 };
+
+            } else if(req.find(boost::beast::http::field::authorization) == req.end()){
+
+                //make a spare token for the user
 
             };
 
@@ -110,15 +124,31 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
         break;
 
+
+
+
+
         case boost::beast::http::verb::post:
 
-        res.result(boost::beast::http::status::ok);
+        if(this->path_vir(req,"/signup")){
 
-        res.set(boost::beast::http::field::content_type,"application/json");
+            res.set(boost::beast::http::field::content_type,"application/json");
 
-        this->controller.mail_pass_checks(this->script.conv_log_data(req),[](bool isPassed){
+            this->controller.mail_pass_checks(this->script.conv_log_data(req),[&](login_init log_data,bool isPassed){
 
-        });
+                res.result(boost::beast::http::status::ok);
+
+                if(isPassed==true){
+
+                    //pass the log_data to the database
+
+                    res.body()=this->script.bool_json("isCreated",isPassed);
+
+                }
+
+            });
+
+        };
             
         break;
 

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <functional>
 
 #include <nlohmann/json.hpp>
 #include <boost/asio.hpp>
@@ -24,6 +25,7 @@ class jsonScript{
     void id_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(std::string)> callback);
     void bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback);
     login_init conv_log_data(boost::beast::http::request<boost::beast::http::string_body> res);
+    nlohmann::json bool_json(std::string ref,bool t_f);
 };
 
 
@@ -97,3 +99,14 @@ login_init jsonScript::conv_log_data(boost::beast::http::request<boost::beast::h
 
     return log_info;
 }; 
+
+
+
+nlohmann::json jsonScript::bool_json(std::string ref,bool t_f){
+    
+    nlohmann::json body={
+        {ref,t_f}
+    };
+
+    return body;
+};

@@ -5,6 +5,7 @@
 #include <chrono>
 #include <ctime>
 #include <memory>
+#include <functional>
 
 #include <id_gen_connector.h>
 #include <jsonScript.h>
