@@ -46,6 +46,8 @@ void log_controller::mail_pass_checks(login_init initials,std::function<void(log
 
     } else if(initials.password=="" && initials.gmail==""){
 
+        //check for the validity of phone number via api
+
         
 
     };

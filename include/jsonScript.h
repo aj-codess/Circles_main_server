@@ -26,6 +26,7 @@ class jsonScript{
     void bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback);
     login_init conv_log_data(boost::beast::http::request<boost::beast::http::string_body> res);
     nlohmann::json bool_json(std::string ref,bool t_f);
+    std::string option_conv(boost::beast::http::response<boost::beast::http::string_body> req);
 };
 
 
@@ -51,6 +52,7 @@ void jsonScript::id_conv(boost::beast::http::response<boost::beast::http::string
     };
 
 };
+
 
 
 void jsonScript::bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback){
@@ -79,6 +81,7 @@ void jsonScript::bool_conv(boost::beast::http::response<boost::beast::http::stri
     };
 
 };
+
 
 
 login_init jsonScript::conv_log_data(boost::beast::http::request<boost::beast::http::string_body> req){
@@ -110,3 +113,9 @@ nlohmann::json jsonScript::bool_json(std::string ref,bool t_f){
 
     return body;
 };
+
+
+
+std::string jsonScript::option_conv(boost::beast::http::response<boost::beast::http::string_body> req){
+
+}

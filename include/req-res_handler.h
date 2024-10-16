@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <functional>
 
 #include <log_controller.h>
 #include <jsonScript.h>
@@ -28,10 +29,11 @@ class req_res_handler{
     private:
     bool path_vir(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
     std::string generate_token(std::string user_id);
-    bool token_vir(std::string token);
+    bool token_vir(std::string token,std::function<void(std::string)> callback);
     jsonScript script;
     log_controller controller;
     handler foreign_token;
+    std::string id_getter(std::string token);
 };
 
 
@@ -51,25 +53,31 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                 std::string aut=req[boost::beast::http::field::authorization];
 
-                if (aut.find("Bearer ") == 0) {
+                if (aut.find("Bearer ") == 0){
 
                     if(callback){
                         callback(aut.substr(7));
                     };
 
-                } else{
+                } else if(aut.find("Pre_Bearer ")==0){
 
-                    //create the session token
-
-                    res.result(boost::beast::http::status::forbidden);
-
-                    res.body()="session Lost.";
+                    if(callback){
+                        callback(aut.substr(11));
+                    };
 
                 };
 
             } else if(req.find(boost::beast::http::field::authorization) == req.end()){
 
-                //make a spare token for the user
+                std::string foreigner_token=this->generate_token(this->foreign_token.gen_new());
+
+                req.set(boost::beast::http::field::authorization,"Pre_Bearer "+foreigner_token);
+
+                res.set(boost::beast::http::field::authorization,"Pre_Bearer "+foreigner_token);
+
+                if(callback){
+                    callback(foreigner_token);
+                };
 
             };
 
@@ -77,7 +85,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
         extract_token([&](std::string ach_token){
 
-            token=ach_token;
+                token=ach_token;
             
         });
 
@@ -86,12 +94,16 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
         bool isToken;
 
-        isToken=this->token_vir(tkn);
+        std::function<void(std::string)> empty_callback;
+
+        isToken=this->token_vir(tkn,empty_callback);
 
         if(isToken==true){
 
             if(callback){
+
                 callback();
+
             };
 
         } else{
@@ -101,6 +113,8 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
         };
 
     };
+
+
 
     checks(token,[&](){
 
@@ -125,9 +139,6 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
         break;
 
 
-
-
-
         case boost::beast::http::verb::post:
 
         if(this->path_vir(req,"/signup")){
@@ -140,13 +151,67 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                 if(isPassed==true){
 
-                    //pass the log_data to the database
+                    std::string auth=req[boost::beast::http::field::authorization];
+
+                        std::string id;
+                        
+                        this->token_vir(auth.substr(11),[&](std::string token_id){
+
+                            id=token_id;
+
+                        });
+
+                        if(this->foreign_token.exists(id)==false){
+
+                            this->foreign_token.setter(id,log_data);
+
+                        };
 
                     res.body()=this->script.bool_json("isCreated",isPassed);
 
-                }
+                } else{
+
+                    res.body()=this->script.bool_json("isCreated",isPassed);
+
+                };
 
             });
+
+        } else if(this->path_vir(req,"/signup/make_push")){
+
+            res.set(boost::beast::http::status::ok);
+
+            res.set(boost::beast::http::field::content_type,"application/json");
+
+            std::string auth=req[boost::beast::http::field::authorization];
+
+            if(auth.find("Pre_Bearer ") != std::string::npos){
+
+                std::string id;
+
+                this->token_vir(auth.substr(11),[&](std::string token_id){
+
+                    id=token_id;
+
+                });
+
+                if(this->foreign_token.exists(id)==true){
+
+                    std::string option=this->script.option_conv(req.body());
+
+                    user_recog client_data=this->foreign_token.logger[id];
+                    
+                    //work on option_conv grabbing the push option
+                    //pass option to the domain probe push option 
+                    //genetate and store token in the the logger map with regards to the id 
+                    //keep a timer 
+                    //make a submit push route grabbing the id from authorization find time difference and validate it
+                    //make and set a real user id 
+                    //get initials, store in data base and clear from the logger map
+
+                };
+
+            };
 
         };
             
@@ -233,7 +298,7 @@ std::string req_res_handler::generate_token(std::string user_id){
 
 
 
-bool req_res_handler::token_vir(std::string token){
+bool req_res_handler::token_vir(std::string token,std::function<void(std::string)> callback){
 
     bool isUser=false;
 
@@ -257,6 +322,10 @@ bool req_res_handler::token_vir(std::string token){
 
         //check for the existence of tokenGen_user_id and compare it to the generated token
 
+        if(callback){
+            callback(tokenGen_user_id);
+        };
+
         std::string db_id;
 
         if(tokenGen_user_id==db_id){
@@ -279,3 +348,6 @@ bool req_res_handler::token_vir(std::string token){
     return isUser;
 
 };
+
+
+
