@@ -92,23 +92,30 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
         });
 
 
-    auto checks=[&](std::string tkn,std::function<void()> callback){
+
+    auto checks=[&](std::string tkn,std::function<void(std::string id)> callback){
 
         bool isToken;
 
         std::function<void(std::string)> empty_callback;
 
-        isToken=this->token_vir(tkn,empty_callback);
+        std::string id;
+
+        isToken=this->token_vir(tkn,[&](std::string user_id){
+
+            id=user_id;
+
+        });
 
         if(isToken==true){
 
             if(callback){
 
-                callback();
+                callback(id);
 
             };
 
-        } else{
+        } else{ 
 
             res.body()="Error with session ";
 
@@ -118,7 +125,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
 
 
-    checks(token,[&](){
+    checks(token,[&](std::string id){
 
         switch(req.method()){
 
@@ -141,12 +148,8 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
         break;
 
 
-
-
-
-
         case boost::beast::http::verb::post:
-
+ 
         if(this->path_vir(req,"/signup")){
 
             res.set(boost::beast::http::field::content_type,"application/json");
@@ -156,16 +159,6 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                 res.result(boost::beast::http::status::ok);
 
                 if(isPassed==true){
-
-                    std::string auth=req[boost::beast::http::field::authorization];
-
-                        std::string id;
-                        
-                        this->token_vir(auth.substr(11),[&](std::string token_id){
-
-                            id=token_id;
-
-                        });
 
                         if(this->foreigner.exists(id)==false){
 
@@ -184,10 +177,6 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
             });
 
 
-
-
-
-
         } else if(this->path_vir(req,"/signup/make_push")){
 
             bool isPushed;
@@ -195,18 +184,6 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
             res.result(boost::beast::http::status::ok);
 
             res.set(boost::beast::http::field::content_type,"application/json");
-
-            std::string auth=req[boost::beast::http::field::authorization];
-
-            if(auth.find("Pre_Bearer ") != std::string::npos){
-
-                std::string id;
-
-                this->token_vir(auth.substr(11),[&](std::string token_id){
-
-                    id=token_id;
-
-                });
 
                 if(this->foreigner.exists(id)==true){
 
@@ -225,21 +202,51 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                 };
 
-            };
-
             res.body()=this->script.bool_json("Push_init",isPushed);
 
 
 
-
         } else if(this->path_vir(req,"signup/push_submit")){
+            
+            res.result(boost::beast::http::status::ok);
 
-                                //make a submit push route grabbing the id from authorization find time difference and validate it
-                                //pass token to the token_vir class method getting the id from the token
-                                //make a difference function to check if time falls within the 120 seconds
-                                //if there is a passed requirement, store the data in a database and clear it from the map
-                    //make and set a real user id 
+            res.set(boost::beast::http::field::content_type,"application/json");
+
+            bool isSaved;
+
+            if(this->foreigner.exists(id)==true){
+
+                std::string push_token=this->script.push_getter(req);
+
+                log_data id_content=this->foreigner.logger[id];
+
+                this->foreigner.submit_override(id_content,push_token,[&](bool isPassed){
+
+                    if(isPassed==true){
+
+                        //right here generate a token with the original id in the bearer of the auth
+                                //save data into database and clear from the map
+                    //make and set a real user id making it a token and setting it
                     //get initials, store in data base and clear from the logger map
+                        //save data to db
+
+                        isSaved=true;
+
+                    } else{
+
+                        isSaved==false;
+
+                    };
+
+                });
+
+            } else{
+
+                res.body()="Error with session";
+
+            };
+
+            res.body()=this->script.bool_json("isLogged",isSaved);
 
         };
             
@@ -278,7 +285,10 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
     res.keep_alive(req.keep_alive());
 
     res.prepare_payload();
+
 };
+
+
 
 
 
@@ -376,6 +386,3 @@ bool req_res_handler::token_vir(std::string token,std::function<void(std::string
     return isUser;
 
 };
-
-
-

@@ -26,7 +26,7 @@ class jsonScript{
     void bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback);
     login_init conv_log_data(boost::beast::http::request<boost::beast::http::string_body> res);
     nlohmann::json bool_json(std::string ref,bool t_f);
-    std::string option_conv(boost::beast::http::response<boost::beast::http::string_body> req);
+    std::string push_getter(boost::beast::http::request<boost::beast::http::string_body> req);
 };
 
 
@@ -112,4 +112,20 @@ nlohmann::json jsonScript::bool_json(std::string ref,bool t_f){
     };
 
     return body;
+};
+
+
+std::string jsonScript::push_getter(boost::beast::http::request<boost::beast::http::string_body> req){
+
+    std::string token;
+
+    nlohmann::json json_body=nlohmann::json::parse(req.body());
+
+    if(json_body.find("push_token") != json_body.end()){
+
+        token=json_body["push_token"].get<std::string>();
+
+    };
+
+    return token;
 };

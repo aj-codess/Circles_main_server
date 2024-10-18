@@ -5,6 +5,7 @@
 #include <chrono>
 #include <ctime>
 #include <map>
+#include <functional>
 
 #include <jsonScript.h>
 
@@ -32,9 +33,12 @@ class handler{
     void setter(std::string id,login_init log_data);
     std::map<std::string,log_data> logger;
     void set_time_token(std::string id,std::string token_time,std::string token);
+    void submit_override(log_data id_content,std::string push_token,std::function<void(bool)> callback);
 
     private:
-
+    long long time_conv(const std::string& milli_str);
+    const double time_lim=90;
+    double time_diff(long long assigned_time,long long returned_time);
 };
 
 
@@ -92,5 +96,53 @@ void handler::set_time_token(std::string id,string token_time,std::string token)
         this->logger[id].token=token;
 
     };
+
+};
+
+
+
+void handler::submit_override(log_data id_content,std::string push_token,std::function<void(bool)> callback){
+    bool isPassed;
+
+    std::string current_time=this->gen_new();
+
+    if(push_token==id_content.token && this->time_diff(this->time_conv(current_time),this->time_conv(id_content.timer_hold))<=this->time_lim){
+
+        isPassed=true;
+
+    } else{
+
+        isPassed=false;
+
+    };
+
+
+    if(callback){
+        callback(isPassed);
+    };
+
+};
+
+
+
+
+long long handler::time_conv(const std::string& milli_str) {
+    try {
+
+        return std::stoll(milli_str);
+
+    } catch (const std::exception& e) {
+
+        std::cerr << "Unable to convert: " << e.what() << std::endl;
+
+        throw;
+    };
+};
+
+
+
+double handler::time_diff(long long assigned_time,long long returned_time){
+
+    return std::abs((double)returned_time/1000.0 - (double)assigned_time/1000.0);
 
 };
