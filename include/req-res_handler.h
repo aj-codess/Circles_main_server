@@ -8,6 +8,7 @@
 #include <log_controller.h>
 #include <jsonScript.h>
 #include <new_handler.h>
+#include <domain_probe.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -32,8 +33,9 @@ class req_res_handler{
     bool token_vir(std::string token,std::function<void(std::string)> callback);
     jsonScript script;
     log_controller controller;
-    handler foreign_token;
+    handler foreigner;
     std::string id_getter(std::string token);
+    domain_probe domain_handler;
 };
 
 
@@ -69,7 +71,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
             } else if(req.find(boost::beast::http::field::authorization) == req.end()){
 
-                std::string foreigner_token=this->generate_token(this->foreign_token.gen_new());
+                std::string foreigner_token=this->generate_token(this->foreigner.gen_new());
 
                 req.set(boost::beast::http::field::authorization,"Pre_Bearer "+foreigner_token);
 
@@ -139,6 +141,10 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
         break;
 
 
+
+
+
+
         case boost::beast::http::verb::post:
 
         if(this->path_vir(req,"/signup")){
@@ -161,9 +167,9 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                         });
 
-                        if(this->foreign_token.exists(id)==false){
+                        if(this->foreigner.exists(id)==false){
 
-                            this->foreign_token.setter(id,log_data);
+                            this->foreigner.setter(id,log_data);
 
                         };
 
@@ -177,9 +183,16 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
             });
 
+
+
+
+
+
         } else if(this->path_vir(req,"/signup/make_push")){
 
-            res.set(boost::beast::http::status::ok);
+            bool isPushed;
+
+            res.result(boost::beast::http::status::ok);
 
             res.set(boost::beast::http::field::content_type,"application/json");
 
@@ -195,16 +208,20 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                 });
 
-                if(this->foreign_token.exists(id)==true){
+                if(this->foreigner.exists(id)==true){
 
-                    std::string option=this->script.option_conv(req.body());
+                    log_data id_content=this->foreigner.logger[id];
 
-                    user_recog client_data=this->foreign_token.logger[id];
+                    std::string token=this->domain_handler.token_generator();
+
+                    this->domain_handler.push_override(id_content.initials.gmail,id_content.initials.phone,token,[&](bool pushed){
+
+                        isPushed=pushed;
+
+                    });
+
+                    this->foreigner.set_time_token(id,this->foreigner.gen_new(),token);
                     
-                    //work on option_conv grabbing the push option
-                    //pass option to the domain probe push option 
-                    //genetate and store token in the the logger map with regards to the id 
-                    //keep a timer 
                     //make a submit push route grabbing the id from authorization find time difference and validate it
                     //make and set a real user id 
                     //get initials, store in data base and clear from the logger map
@@ -212,6 +229,15 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                 };
 
             };
+
+            res.body()=this->script.bool_json("Push_init",isPushed);
+
+
+
+
+        } else if(this->path_vir(req,"signup/push_submit")){
+
+            
 
         };
             

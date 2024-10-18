@@ -113,9 +113,3 @@ nlohmann::json jsonScript::bool_json(std::string ref,bool t_f){
 
     return body;
 };
-
-
-
-std::string jsonScript::option_conv(boost::beast::http::response<boost::beast::http::string_body> req){
-
-}

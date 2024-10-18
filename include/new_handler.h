@@ -22,14 +22,16 @@ using namespace std;
 struct log_data{
     std::string timer_hold;
     user_recog initials;
+    std::string token;
 };
 
 class handler{
     public:
     bool exists(std::string id_2_find);
     std::string gen_new();
-    void setter(std::string,login_init log_data);
+    void setter(std::string id,login_init log_data);
     std::map<std::string,log_data> logger;
+    void set_time_token(std::string id,std::string token_time,std::string token);
 
     private:
 
@@ -77,4 +79,18 @@ void handler::setter(std::string id,login_init log_){
 
         this->logger[id].initials.phone=log_.phone;
 
-}
+        this->logger[id].token="";
+};
+
+
+void handler::set_time_token(std::string id,string token_time,std::string token){
+
+    if(this->exists(id)==true){
+
+        this->logger[id].timer_hold=token_time;
+
+        this->logger[id].token=token;
+
+    };
+
+};
