@@ -221,10 +221,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                     });
 
                     this->foreigner.set_time_token(id,this->foreigner.gen_new(),token);
-                    
-                    //make a submit push route grabbing the id from authorization find time difference and validate it
-                    //make and set a real user id 
-                    //get initials, store in data base and clear from the logger map
+                
 
                 };
 
@@ -237,7 +234,12 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
         } else if(this->path_vir(req,"signup/push_submit")){
 
-            
+                                //make a submit push route grabbing the id from authorization find time difference and validate it
+                                //pass token to the token_vir class method getting the id from the token
+                                //make a difference function to check if time falls within the 120 seconds
+                                //if there is a passed requirement, store the data in a database and clear it from the map
+                    //make and set a real user id 
+                    //get initials, store in data base and clear from the logger map
 
         };
             
