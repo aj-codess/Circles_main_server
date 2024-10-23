@@ -6,6 +6,7 @@
 #include <ctime>
 #include <map>
 #include <functional>
+#include <thread>
 
 #include <jsonScript.h>
 
@@ -34,12 +35,49 @@ class handler{
     std::map<std::string,log_data> logger;
     void set_time_token(std::string id,std::string token_time,std::string token);
     void submit_override(log_data id_content,std::string push_token,std::function<void(bool)> callback);
+    void creator(std::string id);
+    void session_del_override();
 
     private:
     long long time_conv(const std::string& milli_str);
     const double time_lim=90;
     double time_diff(long long assigned_time,long long returned_time);
+    std::vector<std::string> id_2_del;
+    void del_session();
 };
+
+
+
+void handler::session_del_override(){
+
+    std::string current_time=this->gen_new();
+
+    for(auto& [key,value]:logger){
+        if(this->time_diff(this->time_conv(current_time),this->time_conv(value.timer_hold)) > this->time_lim){
+
+            this->id_2_del.push_back(key);
+
+        };
+    };
+    
+    this->del_session();
+
+    std::this_thread::sleep_for(std::chrono::seconds(300));
+};
+
+
+
+
+void handler::del_session(){
+
+    for(int i=0;i<this->id_2_del.size();i++){
+
+        this->logger.erase(this->id_2_del.at(i));
+
+    };
+
+};
+
 
 
 std::string handler::gen_new(){
@@ -87,6 +125,18 @@ void handler::setter(std::string id,login_init log_){
 };
 
 
+
+
+
+void handler::creator(std::string id){
+
+    this->logger[id]=log_data();
+
+};
+
+
+
+
 void handler::set_time_token(std::string id,string token_time,std::string token){
 
     if(this->exists(id)==true){
@@ -106,7 +156,7 @@ void handler::submit_override(log_data id_content,std::string push_token,std::fu
 
     std::string current_time=this->gen_new();
 
-    if(push_token==id_content.token && this->time_diff(this->time_conv(current_time),this->time_conv(id_content.timer_hold))<=this->time_lim){
+    if(push_token==id_content.token && this->time_diff(this->time_conv(current_time),this->time_conv(id_content.timer_hold)) <= this->time_lim){
 
         isPassed=true;
 
@@ -118,7 +168,9 @@ void handler::submit_override(log_data id_content,std::string push_token,std::fu
 
 
     if(callback){
+
         callback(isPassed);
+
     };
 
 };

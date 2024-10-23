@@ -25,6 +25,7 @@ using namespace std;
 
 class req_res_handler{
     public:
+    req_res_handler()=default;
     void structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
 
     private:
@@ -36,10 +37,13 @@ class req_res_handler{
     handler foreigner;
     std::string id_getter(std::string token);
     domain_probe domain_handler;
+    id_schema id_server;
 };
 
 
 void req_res_handler::structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res){
+
+    //std::thread deletion_thread(this->foreigner.session_del_override());
 
     res.version(req.version());
     
@@ -58,7 +62,9 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                 if (aut.find("Bearer ") == 0){
 
                     if(callback){
+
                         callback(aut.substr(7));
+
                     };
 
                 } else if(aut.find("Pre_Bearer ")==0){
@@ -93,7 +99,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
 
 
-    auto checks=[&](std::string tkn,std::function<void(std::string id)> callback){
+    auto checks=[&](std::string tkn,std::function<void(std::string)> callback){
 
         bool isToken;
 
@@ -135,7 +141,12 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                 res.result(boost::beast::http::status::ok);
 
-                res.body()="get the fuck outahere";
+                //check if id exist in the db and send its content
+
+                //if id does not exist then create the session for the client with the map based in the id
+                this->foreigner.creator(id);
+
+                res.body()="get the fuck otta here ";
 
             } else{
 
@@ -224,11 +235,27 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                     if(isPassed==true){
 
-                        //right here generate a token with the original id in the bearer of the auth
-                                //save data into database and clear from the map
-                    //make and set a real user id making it a token and setting it
-                    //get initials, store in data base and clear from the logger map
-                        //save data to db
+                        if(/*if gmail and phone already exist*/true){
+
+                            //get the id associated with the gmail and make a jwt with it and set it to the auth
+
+                        } else{
+
+                            std::string new_id=this->id_server.generate_id("0","0","0");
+
+                            std::string token=this->generate_token(new_id);
+
+                            req.set(boost::beast::http::field::authorization,"Bearer "+token);
+
+                            res.set(boost::beast::http::field::authorization,"Bearer "+token);
+
+                            //save data into database and clear from the map session
+
+                            //get initials, store in data base and clear from the logger map
+
+                            //save data to db
+
+                        };
 
                         isSaved=true;
 
