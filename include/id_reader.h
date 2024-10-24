@@ -23,6 +23,7 @@ class id_reader_class{
     id_info analyse_35(std::string id);
 
     public:
+    id_reader_class()=default;
     std::string get_timestamp(std::string string_time_junk);
     id_info id_read(std::string id);
     nlohmann::json get_in_json(id_info id_info);

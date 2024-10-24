@@ -11,12 +11,13 @@ using namespace std;
 
 class log_controller{
     public:
+    log_controller()=default;
     void mail_pass_checks(login_init initials,std::function<void(login_init,bool)> callback);
 
     private:
     domain_probe mail_checks;
     P_probe_class pass_checks;
-};
+} controller;
 
 
 

@@ -18,6 +18,7 @@ class P_probe_class{
     const short keyLength_max_lim=16;
 
     public:
+    P_probe_class()=default;
     std::hash<std::string> hasher;
     bool db_checks(std::string key, std::string dataBase_key);
     bool length_check(std::string key);

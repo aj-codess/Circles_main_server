@@ -25,20 +25,17 @@ using namespace std;
 
 class req_res_handler{
     public:
-    req_res_handler()=default;
+    req_res_handler() = default; 
+    
     void structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
 
     private:
     bool path_vir(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
     std::string generate_token(std::string user_id);
     bool token_vir(std::string token,std::function<void(std::string)> callback);
-    jsonScript script;
-    log_controller controller;
-    handler foreigner;
     std::string id_getter(std::string token);
-    domain_probe domain_handler;
-    id_schema id_server;
 };
+
 
 
 void req_res_handler::structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res){
@@ -77,7 +74,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
             } else if(req.find(boost::beast::http::field::authorization) == req.end()){
 
-                std::string foreigner_token=this->generate_token(this->foreigner.gen_new());
+                std::string foreigner_token=this->generate_token(foreigner.gen_new());
 
                 req.set(boost::beast::http::field::authorization,"Pre_Bearer "+foreigner_token);
 
@@ -144,7 +141,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                 //check if id exist in the db and send its content
 
                 //if id does not exist then create the session for the client with the map based in the id
-                this->foreigner.creator(id);
+                foreigner.creator(id);
 
                 res.body()="get the fuck otta here ";
 
@@ -165,23 +162,23 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
             res.set(boost::beast::http::field::content_type,"application/json");
 
-            this->controller.mail_pass_checks(this->script.conv_log_data(req),[&](login_init log_data,bool isPassed){
+            controller.mail_pass_checks(script.conv_log_data(req),[&](login_init log_data,bool isPassed){
 
                 res.result(boost::beast::http::status::ok);
 
                 if(isPassed==true){
 
-                        if(this->foreigner.exists(id)==false){
+                        if(foreigner.exists(id)==false){
 
-                            this->foreigner.setter(id,log_data);
+                            foreigner.setter(id,log_data);
 
                         };
 
-                    res.body()=this->script.bool_json("isCreated",isPassed);
+                    res.body()=script.bool_json("isCreated",isPassed);
 
                 } else{
 
-                    res.body()=this->script.bool_json("isCreated",isPassed);
+                    res.body()=script.bool_json("isCreated",isPassed);
 
                 };
 
@@ -196,24 +193,24 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
             res.set(boost::beast::http::field::content_type,"application/json");
 
-                if(this->foreigner.exists(id)==true){
+                if(foreigner.exists(id)==true){
 
-                    log_data id_content=this->foreigner.logger[id];
+                    log_data id_content=foreigner.logger[id];
 
-                    std::string token=this->domain_handler.token_generator();
+                    std::string token=domain_handler.token_generator();
 
-                    this->domain_handler.push_override(id_content.initials.gmail,id_content.initials.phone,token,[&](bool pushed){
+                    domain_handler.push_override(id_content.initials.gmail,id_content.initials.phone,token,[&](bool pushed){
 
                         isPushed=pushed;
 
                     });
 
-                    this->foreigner.set_time_token(id,this->foreigner.gen_new(),token);
+                    foreigner.set_time_token(id,foreigner.gen_new(),token);
                 
 
                 };
 
-            res.body()=this->script.bool_json("Push_init",isPushed);
+            res.body()=script.bool_json("Push_init",isPushed);
 
 
 
@@ -225,13 +222,13 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
             bool isSaved;
 
-            if(this->foreigner.exists(id)==true){
+            if(foreigner.exists(id)==true){
 
-                std::string push_token=this->script.push_getter(req);
+                std::string push_token=script.push_getter(req);
 
-                log_data id_content=this->foreigner.logger[id];
+                log_data id_content=foreigner.logger[id];
 
-                this->foreigner.submit_override(id_content,push_token,[&](bool isPassed){
+                foreigner.submit_override(id_content,push_token,[&](bool isPassed){
 
                     if(isPassed==true){
 
@@ -241,7 +238,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                         } else{
 
-                            std::string new_id=this->id_server.generate_id("0","0","0");
+                            std::string new_id=id_server.generate_id("0","0","0");
 
                             std::string token=this->generate_token(new_id);
 
@@ -273,7 +270,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
             };
 
-            res.body()=this->script.bool_json("isLogged",isSaved);
+            res.body()=script.bool_json("isLogged",isSaved);
 
         };
             

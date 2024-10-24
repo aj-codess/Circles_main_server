@@ -41,7 +41,11 @@ private:
 
 public:
     server_operands(boost::asio::io_context& context)
-        : ioc(context), l_acceptor(context), resolver(context), isOpen(0),req_res() {};
+        : ioc(context), l_acceptor(context), resolver(context), isOpen(false) {
+
+            cout<<"server Loaded "<<endl;
+
+        };
 
 
     void open_lis_con(const domain_details& domain_dtl);
@@ -140,7 +144,7 @@ void server_operands::socket_handler(std::shared_ptr<boost::asio::ip::tcp::socke
 
             boost::beast::http::async_read(stream_socket,buffer,req,yield_ioc);
 
-            this->req_res.structure(req,res);
+            req_res.structure(req,res);
 
             boost::beast::http::async_write(stream_socket,req,yield_ioc);
 

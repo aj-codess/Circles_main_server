@@ -34,6 +34,7 @@ using namespace std;
 
 class id_schema{
     public:
+    id_schema()=default;
     uint64_t user_space_position(bool user_or_space);
     std::string generate_id(std::string option,std::string user_id="0",std::string space_id="0");
     bool del_user(id_info id_struct);//requires reader call
@@ -43,9 +44,8 @@ class id_schema{
     void persistent_init(std::function<void(persistent persist)> callback);
 
     private:
-    id_gen_con id_server;
-    jsonScript json_conv;
-};
+    
+} id_server;
 
 
 
@@ -53,7 +53,7 @@ void id_schema::persistent_init(std::function<void(persistent persist)> callback
 
     payload_opt payload_req={true,false};
 
-    this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
+    connector.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
         try{
             persistent persist;
@@ -88,9 +88,9 @@ string id_schema::generate_id(std::string option,std::string user_id,std::string
 
     payload_opt payload_req={false,false,option,user_id,space_id, };
 
-    this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
+    connector.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
-        this->json_conv.id_conv(res,"id", [&](std::string parsed_id){
+        script.id_conv(res,"id", [&](std::string parsed_id){
 
             id=parsed_id;
 
@@ -113,9 +113,9 @@ bool id_schema::del_user(id_info id_struct){
 
     payload_opt payload_req={false,true,"",user_id,"","","user",server_position};
 
-    this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
+    connector.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
-        this->json_conv.bool_conv(res,"isDeleted",[&](bool deleted){
+        script.bool_conv(res,"isDeleted",[&](bool deleted){
 
             isDeleted=deleted;
 
@@ -138,9 +138,9 @@ bool id_schema::del_space(id_info id_struct){
 
     payload_opt payload_req={false,true,"","",space_id,"","space","",server_position};
 
-    this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
+    connector.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
-        this->json_conv.bool_conv(res,"isDeleted",[&](bool deleted){
+        script.bool_conv(res,"isDeleted",[&](bool deleted){
 
             isDeleted=deleted;
 
@@ -163,9 +163,9 @@ bool id_schema::del_ugc(id_info id_struct){
 
     payload_opt payload_req={false,true,"",user_id,"",ugc_id,"ugc"};
 
-    this->id_server.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
+    connector.io_pipe(payload_req,[&](boost::beast::http::response<boost::beast::http::string_body> res){
 
-        this->json_conv.bool_conv(res,"isDeleted",[&](bool deleted){
+        script.bool_conv(res,"isDeleted",[&](bool deleted){
 
             isDeleted=deleted;
 

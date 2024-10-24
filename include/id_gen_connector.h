@@ -43,7 +43,6 @@ class id_gen_con{
     void server_init();
 
     public:
-        id_gen_con()=default;
         id_gen_con(boost::asio::io_context& context,domain_struc domain)
         :ioc(context),domain_dtl(domain),resolver(boost::asio::make_strand(context)) {
             try{
@@ -53,12 +52,11 @@ class id_gen_con{
             } catch(const exception& e){
 
                 cout<<"Error connecting to id server - "<<e.what()<<endl;
-
             };
         };
 
     void io_pipe(payload_opt payload,std::function<void(boost::beast::http::response<boost::beast::http::string_body>)> callback);
-};
+} connector;
 
 
 

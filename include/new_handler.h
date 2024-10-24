@@ -29,6 +29,7 @@ struct log_data{
 
 class handler{
     public:
+    handler()=default;
     bool exists(std::string id_2_find);
     std::string gen_new();
     void setter(std::string id,login_init log_data);
@@ -44,7 +45,8 @@ class handler{
     double time_diff(long long assigned_time,long long returned_time);
     std::vector<std::string> id_2_del;
     void del_session();
-};
+
+} foreigner;
 
 
 

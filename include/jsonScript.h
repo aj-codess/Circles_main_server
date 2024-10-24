@@ -22,12 +22,14 @@ class jsonScript{
     private:
 
     public:
+    jsonScript()=default;
     void id_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(std::string)> callback);
     void bool_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(bool)> callback);
     login_init conv_log_data(boost::beast::http::request<boost::beast::http::string_body> res);
     nlohmann::json bool_json(std::string ref,bool t_f);
     std::string push_getter(boost::beast::http::request<boost::beast::http::string_body> req);
-};
+    
+} script;
 
 
 void jsonScript::id_conv(boost::beast::http::response<boost::beast::http::string_body>& res,std::string target,std::function<void(std::string)> callback){

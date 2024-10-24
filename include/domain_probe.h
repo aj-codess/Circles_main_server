@@ -13,6 +13,7 @@ using namespace std;
 
 class domain_probe{
     public:
+    domain_probe()=default;
     bool mail_validity(std::string mail_addr);
     void push_override(std::string mail_addr,std::string phone,std::string token_ext,std::function<void(bool)> callback);
     std::string token_generator();
@@ -23,7 +24,7 @@ class domain_probe{
     const string second_level_domain[3]={"gmail","yahoo","hotmail"};
     const string top_level_domain=".com";
     const char concatinator='@';
-};
+} domain_handler;
 
 
 std::string domain_probe::token_generator(){    
