@@ -43,6 +43,16 @@ class id_gen_con{
     void server_init();
 
     public:
+
+        id_gen_con()
+        : ioc(*(new boost::asio::io_context())),
+          domain_dtl(),
+          resolver(boost::asio::make_strand(ioc))
+    {
+        // Optional: Additional logic if needed
+        std::cout << "Default constructor called." << std::endl;
+    }
+        
         id_gen_con(boost::asio::io_context& context,domain_struc domain)
         :ioc(context),domain_dtl(domain),resolver(boost::asio::make_strand(context)) {
             try{

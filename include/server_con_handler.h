@@ -37,13 +37,13 @@ private:
     void accept_client();
     void socket_handler(std::shared_ptr<boost::asio::ip::tcp::socket> socket,boost::asio::yield_context yield_ioc);
 
-    //socket_handler socket_han;
-
 public:
     server_operands(boost::asio::io_context& context)
         : ioc(context), l_acceptor(context), resolver(context), isOpen(false) {
 
             cout<<"server Loaded "<<endl;
+
+            this->req_res.active_session_del=false;
 
         };
 
@@ -146,8 +146,8 @@ void server_operands::socket_handler(std::shared_ptr<boost::asio::ip::tcp::socke
 
             req_res.structure(req,res);
 
-            boost::beast::http::async_write(stream_socket,req,yield_ioc);
-
+            boost::beast::http::async_write(stream_socket,res,yield_ioc);
+   
             if (res.need_eof()) {
 
                 boost::beast::error_code shutdown_ec;
@@ -163,7 +163,7 @@ void server_operands::socket_handler(std::shared_ptr<boost::asio::ip::tcp::socke
                 };
 
                 break;
-            }
+            };
 
         } catch(const std::exception& e){
             cout<<"Error with session - "<<e.what()<<endl;

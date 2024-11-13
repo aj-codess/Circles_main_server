@@ -76,7 +76,7 @@ void network_operands::start_server(domain_details& domain) {
 
 int main() {
 
-    domain_details domain_dtl = { "localhost", "8888" };
+    domain_details domain_dtl = {"localhost", "8888" };
 
     boost::asio::io_context context;
 

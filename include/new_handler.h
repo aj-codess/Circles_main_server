@@ -38,11 +38,11 @@ class handler{
     void submit_override(log_data id_content,std::string push_token,std::function<void(bool)> callback);
     void creator(std::string id);
     void session_del_override();
+    long long time_conv(const std::string& milli_str);
+    double time_diff(long long assigned_time,long long returned_time);
 
     private:
-    long long time_conv(const std::string& milli_str);
     const double time_lim=90;
-    double time_diff(long long assigned_time,long long returned_time);
     std::vector<std::string> id_2_del;
     void del_session();
 
@@ -185,7 +185,7 @@ long long handler::time_conv(const std::string& milli_str) {
 
         return std::stoll(milli_str);
 
-    } catch (const std::exception& e) {
+    } catch (const std::exception& e){
 
         std::cerr << "Unable to convert: " << e.what() << std::endl;
 
