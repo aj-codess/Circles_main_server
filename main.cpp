@@ -25,7 +25,7 @@ public:
 
             std::ofstream path(ENV);
 
-            if (path.is_open()) {
+            if (path.is_open()){
 
                 try{
 

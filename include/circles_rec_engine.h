@@ -195,6 +195,7 @@ std::string circles_rec_module::gen_pref(std::string id){
   std::unique_ptr<short> holder=std::make_unique<short>(0);
 
     std::mt19937 generator(std::random_device{}());
+    
     std::uniform_int_distribution<int> distribution(1,100);
 
     short guess=distribution(generator);

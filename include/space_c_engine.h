@@ -7,13 +7,21 @@
 #include <algorithm>
 #include <chrono>
 #include <thread>
+#include <atomic>
 
 using namespace std;
 
+struct coordination{
+    std::string latitude, longitude, altitude, accuracy, altitudeAccuracy, heading, speed;
+};
+
+
+struct location{
+    coordination coord;
+    std::string time_4_coord_gen;
+};
 
 struct shield_data{
-    std::string owner_long;
-    std::string owner_lat;
     bool isOpen;
     bool man_aut;
     bool timer_open;
@@ -23,8 +31,7 @@ struct shield_data{
 struct data_2_hold{
     std::string ownership_id;
     std::vector<std::string> sub_owners;
-    std::string loc_longitude;
-    std::string loc_latitude;
+    location spawn;
     std::vector<std::string> space_piece;
     std::string space_name;
     shield_data log_info;
@@ -37,7 +44,7 @@ map<std::string,data_2_hold> space_containers;
 
 class creator_operands{
     public:
-    bool create(std::string id,std::string ownership_id,std::string space_name,std::string owner_long_lat[],bool options[]);
+    bool create(std::string id,std::string ownership_id,std::string space_name,location space_spawn,bool options[]);
     bool exists(std::string space_id,std::string space_name);
     bool name_checker(std::string space_name);
     bool join(std::string space_id,std::string user_id);
@@ -55,10 +62,14 @@ class creator_operands{
 
     private:
     std::vector<std::string> name_pool;
+    void space_analytics_init();
+    void space_analytics();
+    std::atomic<bool> analytic_thread;
+
 } creator;
 
 
-bool creator_operands::create(std::string id,std::string ownership_id,std::string space_name,std::string owner_long_lat[],bool options[]){
+bool creator_operands::create(std::string id,std::string ownership_id,std::string space_name,location space_spawn,bool options[]){
     
     std::unique_ptr<bool> isCreated=std::make_unique<bool>();
 
@@ -76,15 +87,7 @@ bool creator_operands::create(std::string id,std::string ownership_id,std::strin
         
         this->name_pool.push_back(space_name);
         
-        // space_containers[id].loc_latitude;
-        
-        // space_containers[id].loc_latitude;
-        
-        // long and lat of the location where space was created
-        
-        space_containers[id].log_info.owner_long=owner_long_lat[0];
-        
-        space_containers[id].log_info.owner_lat=owner_long_lat[1];
+        space_containers[id].spawn=space_spawn;
         
         space_containers[id].log_info.isOpen=options[0];
         
@@ -93,6 +96,13 @@ bool creator_operands::create(std::string id,std::string ownership_id,std::strin
         space_containers[id].log_info.timer_open=options[2];
 
         *isCreated=true;
+    };
+    
+
+    if(this->analytic_thread==false){
+
+            std::thread analytics_thread(&creator_operands::space_analytics_init, this);
+
     };
 
     return *isCreated;
@@ -421,4 +431,26 @@ std::vector<std::string> creator_operands::get_space_sub_admins(std::string spac
     };
 
     return *sub_owners;
+};
+
+
+
+void creator_operands::space_analytics_init(){
+
+    try{
+
+        this->space_analytics();
+
+    } catch(std::exception& e){
+
+        cout<<"Error with Analytics - "<<e.what()<<endl;
+
+    };
+
+};
+
+
+
+void creator_operands::space_analytics(){
+
 };

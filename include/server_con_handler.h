@@ -43,7 +43,7 @@ public:
 
             cout<<"server Loaded "<<endl;
 
-            this->req_res.active_session_del=false;
+            this->req_res.initial=true;
 
         };
 

@@ -7,6 +7,7 @@
 #include <map>
 #include <functional>
 #include <thread>
+#include <mutex>
 
 #include <jsonScript.h>
 
@@ -45,12 +46,16 @@ class handler{
     const double time_lim=90;
     std::vector<std::string> id_2_del;
     void del_session();
+    std::mutex mtx;
 
 } foreigner;
 
 
 
+
 void handler::session_del_override(){
+
+    std::lock_guard<std::mutex> locker(this->mtx);
 
     std::string current_time=this->gen_new();
 
@@ -63,14 +68,14 @@ void handler::session_del_override(){
     };
     
     this->del_session();
-
-    std::this_thread::sleep_for(std::chrono::seconds(300));
 };
 
 
 
 
 void handler::del_session(){
+
+    std::lock_guard<std::mutex> locker(this->mtx);
 
     for(int i=0;i<this->id_2_del.size();i++){
 

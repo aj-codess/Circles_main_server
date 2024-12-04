@@ -10,6 +10,7 @@
 #include <jsonScript.h>
 #include <new_handler.h>
 #include <domain_probe.h>
+#include <space_c_engine.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -27,8 +28,8 @@ using namespace std;
 class req_res_handler{
     public:
     req_res_handler() = default; 
-    bool active_session_del;
     void structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
+    bool initial;
 
     private:
     bool path_vir(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
@@ -37,13 +38,23 @@ class req_res_handler{
     std::string id_getter(std::string token);
     std::string session_timer;
     void session_del_controller();
+    std::atomic<bool> thread_running=false;
 };
 
 
 
 void req_res_handler::structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res){
 
-    if (active_session_del == false && foreigner.time_diff(foreigner.time_conv(foreigner.gen_new()),foreigner.time_conv(this->session_timer)) > 180 ) {
+    if(this->initial==true){
+
+        this->session_timer=foreigner.gen_new();
+
+        this->initial=false;
+
+    };
+
+
+    if(foreigner.time_diff(foreigner.time_conv(foreigner.gen_new()),foreigner.time_conv(this->session_timer)) > 180 ) {
 
         this->session_timer=foreigner.gen_new();
 
@@ -145,22 +156,28 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
         case boost::beast::http::verb::get:
             
-            if(this->path_vir(req,"/")==true){
+            if(this->path_vir(req,"/world")==true){
 
                 res.result(boost::beast::http::status::ok);
 
                 //check if id exist in the db and send its content
 
                 //if id does not exist then create the session for the client with the map based in the id
-                if(foreigner.exists(id)==false){
-
+                if(/*if id is not in db &&*/foreigner.exists(id)==false){
+                    //give limited access to client
                     foreigner.creator(id);
 
-                } else{
+                } else if(/*if id is not in db &&*/ foreigner.exists(id)==true){
 
-                    //give limited access to this user
+                    // give limited access to client
 
-                };
+                } 
+                // else if(/*if id is in db*/){
+
+                //     //give full access to the client
+                //     //give feedback based on what is in client db
+
+                // }
 
                 res.body()="get the fuck otta here ";
 
@@ -225,12 +242,10 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                     });
 
                     foreigner.set_time_token(id,foreigner.gen_new(),token);
-                
 
                 };
 
             res.body()=script.bool_json("Push_init",isPushed);
-
 
 
         } else if(this->path_vir(req,"signup/push_submit")){
@@ -254,6 +269,9 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
                         if(/*if gmail and phone already exist*/true){
 
                             //get the id associated with the gmail and make a jwt with it and set it to the auth
+                            // std::string token=this->generate_token(/*id from db*/);
+
+                            //res.set(boost::beast::http::field::authorization,"Bearer "+token);
 
                         } else{
 
@@ -261,15 +279,11 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
                             std::string token=this->generate_token(new_id);
 
-                            req.set(boost::beast::http::field::authorization,"Bearer "+token);
-
                             res.set(boost::beast::http::field::authorization,"Bearer "+token);
 
-                            //save data into database and clear from the map session
+                            //get initials, store in data base and clear from the logger map - id_content variable
 
-                            //get initials, store in data base and clear from the logger map
-
-                            //save data to db
+                            //save data to db - id_content variable
 
                         };
 
@@ -335,20 +349,23 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
 
 
 void req_res_handler::session_del_controller(){
-cout<<"new thread started"<<endl;
-    try{
 
-        this->active_session_del=true;
+    if(this->thread_running.exchange(true)) return;
+
+    try{
+        cout<<"new thread started"<<endl;
 
         foreigner.session_del_override();
+
+        cout<<"Session cleaned"<<endl;
 
     } catch(const std::exception e){
 
         cout<<"Error with session cleaner - "<<e.what()<<endl;
 
     };
-    
-    this->active_session_del=false;
+
+    this->thread_running=false;
 
 };
 
