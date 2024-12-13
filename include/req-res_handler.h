@@ -28,7 +28,7 @@ using namespace std;
 class req_res_handler{
     public:
     req_res_handler() = default; 
-    void structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
+    void structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res,boost::beast::tcp_stream& con_socket);
     bool initial;
 
     private:
@@ -43,7 +43,7 @@ class req_res_handler{
 
 
 
-void req_res_handler::structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res){
+void req_res_handler::structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res,boost::beast::tcp_stream& con_socket){
 
     if(this->initial==true){
 

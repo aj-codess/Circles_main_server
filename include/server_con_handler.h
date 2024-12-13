@@ -144,7 +144,7 @@ void server_operands::socket_handler(std::shared_ptr<boost::asio::ip::tcp::socke
 
             boost::beast::http::async_read(stream_socket,buffer,req,yield_ioc);
 
-            req_res.structure(req,res);
+            req_res.structure(req,res,stream_socket);
 
             boost::beast::http::async_write(stream_socket,res,yield_ioc);
    
