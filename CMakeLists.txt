@@ -9,9 +9,13 @@ set(GLOBAL "GenuTech->circujoin")
 project(Circles_Server_Engine VERSION 1.0)
 
 add_executable(main main.cpp)
-target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/services)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/middleware)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/routes)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/controller)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core)
 
-set(ENV_PATH "./include/env.txt")
+set(ENV_PATH "./assets/env.txt")
 
 target_compile_definitions(main PRIVATE GLOBAL="${GLOBAL}")
 target_compile_definitions(main PRIVATE ENV="${ENV_PATH}")
