@@ -2674,6 +2674,30 @@
 			"value" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/share/boost_winapi"
 		},
 		{
+			"name" : "bson-1.0_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for bson-1.0."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bson-1.0"
+		},
+		{
+			"name" : "bsoncxx_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for bsoncxx."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bsoncxx"
+		},
+		{
 			"name" : "libpqxx_DIR",
 			"properties" : 
 			[
@@ -2684,6 +2708,30 @@
 			],
 			"type" : "PATH",
 			"value" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/share/libpqxx"
+		},
+		{
+			"name" : "mongoc-1.0_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for mongoc-1.0."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongoc-1.0"
+		},
+		{
+			"name" : "mongocxx_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for mongocxx."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongocxx"
 		},
 		{
 			"name" : "nlohmann_json_DIR",

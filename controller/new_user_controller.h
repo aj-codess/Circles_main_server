@@ -9,6 +9,13 @@
 #include <thread>
 #include <mutex>
 
+#include <bsoncxx/json.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/exception/exception.hpp>
+#include <mongocxx/instance.hpp> 
+#include <mongocxx/uri.hpp>
+
+
 #include <jsonScript.h>
 
 using namespace std;
@@ -31,6 +38,7 @@ struct log_data{
 class handler{
     public:
     handler()=default;
+    void init();
     bool exists(std::string id_2_find);
     std::string gen_new();
     void setter(std::string id,login_init log_data);
@@ -51,6 +59,10 @@ class handler{
 } foreigner;
 
 
+
+void handler::init(){
+    
+}
 
 
 void handler::session_del_override(){

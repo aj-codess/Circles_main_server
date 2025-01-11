@@ -46,4 +46,12 @@ find_package(OpenSSL REQUIRED)
 target_include_directories(main PUBLIC ${OpenSSL_INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${OpenSSL_LIBRARIES} ${OpenSSL_DEPENDENCIES})
 
+find_package(bsoncxx CONFIG REQUIRED)
+target_include_directories(main PUBLIC ${bsoncxx_INCLUDE_DIR})
+target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:mongo::bsoncxx_static>,mongo::bsoncxx_static,mongo::bsoncxx_shared>)
+
+find_package(mongocxx CONFIG REQUIRED)
+target_include_directories(main PUBLIC ${mongocxx_INCLUDE_DIR})
+target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:mongo::mongocxx_static>,mongo::mongocxx_static,mongo::mongocxx_shared>)
+
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../vcpkg/installed/x64-linux/include/jwt-cpp)

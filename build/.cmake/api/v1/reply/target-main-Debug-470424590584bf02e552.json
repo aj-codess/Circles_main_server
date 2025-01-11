@@ -29,10 +29,18 @@
 			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/boost_coroutine/boost_coroutine-config.cmake",
 			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/libpqxx/libpqxx-targets.cmake",
 			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/libpqxx/libpqxx-config.cmake",
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongocxx/mongocxx_targets.cmake",
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongocxx/mongocxx-config.cmake",
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bsoncxx/bsoncxx_targets.cmake",
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bsoncxx/bsoncxx-config.cmake",
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bson-1.0/bson-targets.cmake",
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bson-1.0/bson-1.0-config.cmake",
+			"/usr/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
 			"/usr/share/cmake-3.29/Modules/FindOpenSSL.cmake",
 			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/openssl/vcpkg-cmake-wrapper.cmake",
 			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/postgresql/vcpkg-cmake-wrapper.cmake",
-			"/usr/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake"
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongoc-1.0/mongoc-targets.cmake",
+			"/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongoc-1.0/mongoc-1.0-config.cmake"
 		],
 		"nodes" : 
 		[
@@ -76,6 +84,18 @@
 				"parent" : 0
 			},
 			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 51,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 55,
+				"parent" : 0
+			},
+			{
 				"command" : 6,
 				"file" : 1,
 				"line" : 27,
@@ -85,27 +105,27 @@
 				"command" : 5,
 				"file" : 0,
 				"line" : 857,
-				"parent" : 7
+				"parent" : 9
 			},
 			{
 				"file" : 3,
-				"parent" : 8
+				"parent" : 10
 			},
 			{
 				"command" : 4,
 				"file" : 3,
 				"line" : 36,
-				"parent" : 9
+				"parent" : 11
 			},
 			{
 				"file" : 2,
-				"parent" : 10
+				"parent" : 12
 			},
 			{
 				"command" : 3,
 				"file" : 2,
 				"line" : 60,
-				"parent" : 11
+				"parent" : 13
 			},
 			{
 				"command" : 6,
@@ -117,81 +137,221 @@
 				"command" : 5,
 				"file" : 0,
 				"line" : 857,
-				"parent" : 13
+				"parent" : 15
 			},
 			{
 				"file" : 5,
-				"parent" : 14
+				"parent" : 16
 			},
 			{
 				"command" : 4,
 				"file" : 5,
 				"line" : 4,
-				"parent" : 15
+				"parent" : 17
 			},
 			{
 				"file" : 4,
-				"parent" : 16
+				"parent" : 18
 			},
 			{
 				"command" : 3,
 				"file" : 4,
 				"line" : 61,
-				"parent" : 17
+				"parent" : 19
+			},
+			{
+				"command" : 6,
+				"file" : 1,
+				"line" : 53,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 857,
+				"parent" : 21
+			},
+			{
+				"file" : 7,
+				"parent" : 22
+			},
+			{
+				"command" : 4,
+				"file" : 7,
+				"line" : 4,
+				"parent" : 23
+			},
+			{
+				"file" : 6,
+				"parent" : 24
+			},
+			{
+				"command" : 3,
+				"file" : 6,
+				"line" : 60,
+				"parent" : 25
+			},
+			{
+				"command" : 6,
+				"file" : 1,
+				"line" : 49,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 857,
+				"parent" : 27
+			},
+			{
+				"file" : 9,
+				"parent" : 28
+			},
+			{
+				"command" : 4,
+				"file" : 9,
+				"line" : 4,
+				"parent" : 29
+			},
+			{
+				"file" : 8,
+				"parent" : 30
+			},
+			{
+				"command" : 3,
+				"file" : 8,
+				"line" : 60,
+				"parent" : 31
+			},
+			{
+				"command" : 7,
+				"file" : 9,
+				"line" : 2,
+				"parent" : 29
+			},
+			{
+				"command" : 6,
+				"file" : 12,
+				"line" : 76,
+				"parent" : 33
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 857,
+				"parent" : 34
+			},
+			{
+				"file" : 11,
+				"parent" : 35
+			},
+			{
+				"command" : 4,
+				"file" : 11,
+				"line" : 5,
+				"parent" : 36
+			},
+			{
+				"file" : 10,
+				"parent" : 37
+			},
+			{
+				"command" : 3,
+				"file" : 10,
+				"line" : 60,
+				"parent" : 38
 			},
 			{
 				"command" : 7,
 				"file" : 5,
 				"line" : 2,
-				"parent" : 15
+				"parent" : 17
 			},
 			{
 				"command" : 6,
-				"file" : 9,
+				"file" : 12,
 				"line" : 76,
-				"parent" : 19
+				"parent" : 40
 			},
 			{
 				"command" : 4,
 				"file" : 0,
 				"line" : 811,
-				"parent" : 20
+				"parent" : 41
 			},
 			{
-				"file" : 8,
-				"parent" : 21
+				"file" : 15,
+				"parent" : 42
 			},
 			{
 				"command" : 6,
-				"file" : 8,
+				"file" : 15,
 				"line" : 58,
-				"parent" : 22
+				"parent" : 43
 			},
 			{
 				"command" : 4,
 				"file" : 0,
 				"line" : 811,
-				"parent" : 23
+				"parent" : 44
 			},
 			{
-				"file" : 7,
-				"parent" : 24
+				"file" : 14,
+				"parent" : 45
 			},
 			{
 				"command" : 5,
-				"file" : 7,
+				"file" : 14,
 				"line" : 37,
-				"parent" : 25
+				"parent" : 46
 			},
 			{
-				"file" : 6,
-				"parent" : 26
+				"file" : 13,
+				"parent" : 47
 			},
 			{
 				"command" : 3,
-				"file" : 6,
+				"file" : 13,
 				"line" : 759,
-				"parent" : 27
+				"parent" : 48
+			},
+			{
+				"command" : 7,
+				"file" : 7,
+				"line" : 2,
+				"parent" : 23
+			},
+			{
+				"command" : 6,
+				"file" : 12,
+				"line" : 76,
+				"parent" : 50
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 857,
+				"parent" : 51
+			},
+			{
+				"file" : 17,
+				"parent" : 52
+			},
+			{
+				"command" : 4,
+				"file" : 17,
+				"line" : 19,
+				"parent" : 53
+			},
+			{
+				"file" : 16,
+				"parent" : 54
+			},
+			{
+				"command" : 3,
+				"file" : 16,
+				"line" : 75,
+				"parent" : 55
 			},
 			{
 				"command" : 8,
@@ -238,7 +398,7 @@
 			{
 				"command" : 9,
 				"file" : 1,
-				"line" : 49,
+				"line" : 57,
 				"parent" : 0
 			},
 			{
@@ -289,44 +449,62 @@
 					"define" : "BOOST_URL_STATIC_LINK=1"
 				},
 				{
-					"backtrace" : 29,
+					"backtrace" : 7,
+					"define" : "BSONCXX_STATIC"
+				},
+				{
+					"backtrace" : 57,
 					"define" : "ENV=\"./assets/env.txt\""
 				},
 				{
-					"backtrace" : 30,
+					"backtrace" : 58,
 					"define" : "GLOBAL=\"GenuTech->circujoin\""
+				},
+				{
+					"backtrace" : 8,
+					"define" : "MONGOCXX_STATIC"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 31,
+					"backtrace" : 59,
 					"path" : "/home/aj/code/Berita/Circles_main_server/services"
 				},
 				{
-					"backtrace" : 32,
+					"backtrace" : 60,
 					"path" : "/home/aj/code/Berita/Circles_main_server/middleware"
 				},
 				{
-					"backtrace" : 33,
+					"backtrace" : 61,
 					"path" : "/home/aj/code/Berita/Circles_main_server/routes"
 				},
 				{
-					"backtrace" : 34,
+					"backtrace" : 62,
 					"path" : "/home/aj/code/Berita/Circles_main_server/controller"
 				},
 				{
-					"backtrace" : 35,
+					"backtrace" : 63,
 					"path" : "/home/aj/code/Berita/Circles_main_server/core"
 				},
 				{
-					"backtrace" : 36,
+					"backtrace" : 64,
 					"path" : "/home/aj/code/Berita/Circles_main_server/../vcpkg/installed/x64-linux/include/jwt-cpp"
 				},
 				{
-					"backtrace" : 37,
+					"backtrace" : 65,
 					"isSystem" : true,
 					"path" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/include"
+				},
+				{
+					"backtrace" : 7,
+					"isSystem" : true,
+					"path" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/include/bsoncxx/v_noabi"
+				},
+				{
+					"backtrace" : 8,
+					"isSystem" : true,
+					"path" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/include/mongocxx/v_noabi"
 				}
 			],
 			"language" : "CXX",
@@ -382,48 +560,92 @@
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 12,
+				"backtrace" : 7,
+				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libbsoncxx-static.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 8,
+				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libmongocxx-static.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 14,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libboost_context.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 12,
+				"backtrace" : 14,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libboost_exception.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 12,
+				"backtrace" : 14,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libboost_system.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 18,
+				"backtrace" : 20,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libpq.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 18,
+				"backtrace" : 20,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libpgport.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 18,
+				"backtrace" : 20,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libpgcommon.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 18,
+				"backtrace" : 7,
+				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libbsoncxx-static.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 26,
+				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libmongoc-static-1.0.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libz.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 32,
+				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libbson-static-1.0.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 39,
+				"fragment" : "/usr/lib/x86_64-linux-gnu/librt.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lm",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 20,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libssl.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 28,
+				"backtrace" : 49,
 				"fragment" : "/home/aj/code/Berita/vcpkg/installed/x64-linux/debug/lib/libcrypto.a",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 18,
+				"backtrace" : 20,
 				"fragment" : "-ldl",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 56,
+				"fragment" : "-lresolv",
 				"role" : "libraries"
 			}
 		],

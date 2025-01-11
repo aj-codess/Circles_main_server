@@ -10,6 +10,7 @@
 #include <fstream>
 #include <hasher.h>
 #include <compressor.h>
+#include <new_user_controller.h>
 
 using namespace std;
 
