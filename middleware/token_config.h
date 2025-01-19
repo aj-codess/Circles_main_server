@@ -8,7 +8,7 @@
 
 #include <jwt-cpp/jwt.h>
 
-#include <new_handler.h>
+#include <new_user_controller.h>
 
 class token_config_operands{
     public:

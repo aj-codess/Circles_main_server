@@ -12,6 +12,7 @@
 #include <new_user_controller.h>
 #include <domain_probe.h>
 #include <space_c_engine.h>
+#include <login_routes.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -29,10 +30,11 @@ using namespace std;
 class req_res_handler{
     public:
     req_res_handler() = default; 
-    void structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res,boost::beast::tcp_stream& con_socket);
+    void structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res,boost::beast::tcp_stream& con_socket,std::function<void()> callback);
     bool initial;
 
     private:
+    log_routes log_handler;
     bool path_vir(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
     std::string generate_token(std::string user_id);
     bool token_vir(std::string token,std::function<void(std::string)> callback);
@@ -44,7 +46,7 @@ class req_res_handler{
 
 
 
-void req_res_handler::structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res,boost::beast::tcp_stream& con_socket){
+void req_res_handler::structure(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res,boost::beast::tcp_stream& con_socket,std::function<void()> callback){
 
     if(this->initial==true){
 
@@ -60,7 +62,7 @@ void req_res_handler::structure(boost::beast::http::request<boost::beast::http::
         this->session_timer=foreigner.gen_new();
 
         std::thread deletion_thread(&req_res_handler::session_del_controller, this);
-
+ 
         deletion_thread.detach();
 
     };

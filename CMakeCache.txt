@@ -446,8 +446,20 @@ boost_variant2_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/boo
 //The directory containing a CMake configuration file for boost_winapi.
 boost_winapi_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/boost_winapi
 
+//The directory containing a CMake configuration file for bson-1.0.
+bson-1.0_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bson-1.0
+
+//The directory containing a CMake configuration file for bsoncxx.
+bsoncxx_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/bsoncxx
+
 //The directory containing a CMake configuration file for libpqxx.
 libpqxx_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/libpqxx
+
+//The directory containing a CMake configuration file for mongoc-1.0.
+mongoc-1.0_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongoc-1.0
+
+//The directory containing a CMake configuration file for mongocxx.
+mongocxx_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/mongocxx
 
 //The directory containing a CMake configuration file for nlohmann_json.
 nlohmann_json_DIR:PATH=/home/aj/code/Berita/vcpkg/installed/x64-linux/share/nlohmann_json
