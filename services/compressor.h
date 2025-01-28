@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <zlib.h>
 #include <vector>
 #include <memory>
